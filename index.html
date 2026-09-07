@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Muhammad Alzaghloul portfolio — AI Engineer focused on computer vision, machine learning, and deep learning, featuring detailed Vehicle Inspection System and acne-analysis project case studies." name="description"/>
+<title>Muhammad Alzaghloul · Portfolio</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&amp;family=Syne:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:#060713; --bg2:#0a0d18; --card:rgba(17,20,37,.76); --line:rgba(255,255,255,.10);
+  --text:#f5f7ff; --muted:#a7aec4; --indigo:#7668ff; --pink:#ff4eb8; --cyan:#74e7ff; --amber:#ffca5f;
+  --radius:24px; --shadow:0 22px 70px rgba(0,0,0,.35); --max:1180px;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; color:var(--text); font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif; overflow-x:hidden;
+  background:
+    radial-gradient(circle at 10% 12%, rgba(118,104,255,.14), transparent 25%),
+    radial-gradient(circle at 84% 16%, rgba(255,78,184,.12), transparent 24%),
+    radial-gradient(circle at 72% 72%, rgba(116,231,255,.08), transparent 25%),
+    var(--bg);
+}
+body::after {
+  content:""; position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.12;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+  mix-blend-mode:soft-light;
+}
+::selection { background:rgba(118,104,255,.45); color:#fff; }
+::-webkit-scrollbar { width:10px; }
+::-webkit-scrollbar-track { background:#060713; }
+::-webkit-scrollbar-thumb {
+  background:linear-gradient(var(--indigo), var(--pink), var(--cyan));
+  border-radius:999px; border:2px solid #060713;
+}
+a { color:inherit; text-decoration:none; }
+button { font:inherit; }
+svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+#particles { position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:.55; }
+.shell { position:relative; z-index:2; }
+.container { width:min(calc(100% - 36px), var(--max)); margin-inline:auto; }
+.glass {
+  background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
+  border:1px solid var(--line); backdrop-filter:blur(16px); box-shadow:var(--shadow);
+}
+
+.loader {
+  position:fixed; inset:0; z-index:9999; background:#05060c; display:grid; place-items:center;
+  transition:opacity .65s, visibility .65s;
+}
+.loader.done { opacity:0; visibility:hidden; }
+.load-inner { width:min(420px,82vw); text-align:center; }
+.load-logo {
+  font:800 clamp(60px,10vw,110px)/1 "Syne",sans-serif;
+  letter-spacing:-.06em;
+  background:linear-gradient(90deg,var(--cyan),var(--indigo),var(--pink),var(--amber),var(--cyan));
+  background-size:260% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:shine 2s linear infinite; margin-bottom:22px;
+}
+.load-bar { height:4px; background:rgba(255,255,255,.08); border-radius:999px; overflow:hidden; }
+.load-bar::after {
+  content:""; display:block; height:100%; width:100%; transform:translateX(-100%);
+  background:linear-gradient(90deg,var(--indigo),var(--pink),var(--cyan),var(--amber));
+  animation:load 1.7s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+.cur-dot,.cur-ring {
+  position:fixed; left:0; top:0; transform:translate(-50%,-50%); border-radius:50%;
+  pointer-events:none; z-index:10000;
+}
+.cur-dot { width:7px; height:7px; background:var(--cyan); box-shadow:0 0 16px var(--cyan); }
+.cur-ring { width:34px; height:34px; border:1px solid rgba(255,255,255,.62); transition:width .18s,height .18s,border-color .18s; }
+.cur-ring.hot { width:52px; height:52px; border-color:var(--pink); }
+
+.nav-wrap {
+  position:fixed; top:14px; left:50%; width:min(calc(100% - 28px), var(--max)); transform:translate(-50%,-130%);
+  z-index:1000; animation:navin .8s 1.8s cubic-bezier(.16,.9,.3,1) forwards;
+}
+nav {
+  min-height:58px; display:flex; align-items:center; justify-content:space-between; gap:18px; padding:0 18px;
+  border-radius:18px; background:rgba(8,10,20,.72); border:1px solid var(--line);
+  backdrop-filter:blur(18px) saturate(130%); box-shadow:0 12px 42px rgba(0,0,0,.24);
+}
+.logo { font:800 18px "Syne",sans-serif; letter-spacing:-.04em; }
+.logo b { color:var(--cyan); }
+.nav-links { display:flex; align-items:center; gap:20px; font-size:14px; color:var(--muted); }
+.nav-links a { position:relative; padding:8px 0; transition:color .22s; }
+.nav-links a:hover { color:#fff; }
+.nav-links a::after {
+  content:""; position:absolute; left:0; bottom:3px; width:100%; height:2px;
+  background:linear-gradient(90deg,var(--indigo),var(--pink),var(--cyan)); transform:scaleX(0);
+  transform-origin:left; transition:transform .25s;
+}
+.nav-links a:hover::after { transform:scaleX(1); }
+.resume-mini {
+  padding:8px 11px !important; border:1px solid rgba(116,231,255,.18); border-radius:10px;
+  color:#dffcff !important; background:rgba(116,231,255,.05);
+}
+.nav-toggle {
+  display:none; width:42px; height:42px; border:0; border-radius:12px; background:transparent;
+  color:#fff; font-size:22px; cursor:pointer;
+}
+
+section { padding:104px 0; }
+.view { display:block; }
+.view.hidden { display:none; }
+.kicker {
+  display:inline-flex; align-items:center; gap:9px; color:var(--cyan); font-weight:800; font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px;
+}
+.kicker::before {
+  content:""; width:26px; height:2px; background:linear-gradient(90deg,var(--cyan),var(--indigo)); border-radius:9px;
+}
+h1,h2,h3 { font-family:"Syne",sans-serif; }
+.section-title { margin:0 0 18px; font-size:clamp(34px,5vw,58px); line-height:1.05; letter-spacing:-.045em; }
+.section-copy { max-width:760px; color:var(--muted); margin:0 0 36px; }
+
+.reveal,.left-reveal,.right-reveal {
+  opacity:0; transition:opacity .72s, transform .72s cubic-bezier(.2,.75,.2,1);
+}
+.reveal { transform:translateY(32px); }
+.left-reveal { transform:translateX(-36px); }
+.right-reveal { transform:translateX(36px); }
+.shown { opacity:1 !important; transform:none !important; }
+
+#home {
+  min-height:100svh; display:grid; align-items:center; padding-top:130px; padding-bottom:76px;
+}
+.hero-grid {
+  display:grid; grid-template-columns:minmax(0,1.34fr) minmax(260px,.66fr); gap:clamp(24px,3vw,40px); align-items:center;
+}
+.hero-grid > * { min-width:0; }
+.tag {
+  display:inline-flex; align-items:center; gap:10px; padding:8px 13px; border-radius:999px;
+  border:1px solid rgba(116,231,255,.20); background:rgba(116,231,255,.055); color:#d7fbff;
+  font-size:13px; font-weight:800; margin-bottom:22px;
+}
+.tag i {
+  width:8px; height:8px; border-radius:50%; background:var(--cyan);
+  box-shadow:0 0 0 0 rgba(116,231,255,.45); animation:pulse 1.8s infinite;
+}
+.hero h1 {
+  margin:0; font-size:clamp(48px,5.35vw,86px); line-height:.94; letter-spacing:-.056em; font-weight:800;
+}
+.name {
+  background:linear-gradient(100deg,#fff 5%,#b8beff 18%,var(--cyan) 34%,var(--pink) 52%,var(--amber) 68%,#fff 86%);
+  background-size:260% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:shine 6s linear infinite;
+}
+.subtitle {
+  margin:24px 0 0; font:600 clamp(20px,2.7vw,34px)/1.2 "Syne",sans-serif; color:#dce0ef;
+}
+.hero p {
+  max-width:760px; color:var(--muted); font-size:17px; margin:18px 0 0;
+}
+.ctas { display:flex; flex-wrap:wrap; gap:13px; margin-top:30px; }
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:50px; padding:0 19px;
+  border-radius:14px; border:1px solid var(--line); font-weight:800; font-size:14px; cursor:pointer;
+  transition:transform .25s, box-shadow .25s, border-color .25s; background:rgba(255,255,255,.03); color:#fff;
+}
+.btn.primary {
+  color:#071018; background:linear-gradient(100deg,var(--cyan), #d4fbff);
+  box-shadow:0 12px 36px rgba(116,231,255,.16);
+}
+.btn:hover { transform:translateY(-3px); }
+.btn.primary:hover { box-shadow:0 18px 48px rgba(116,231,255,.24); }
+
+.hero-visual {
+  position:relative; min-width:0; min-height:460px; display:grid; place-items:center; justify-items:end; padding-left:14px; perspective:1200px;
+}
+.orb {
+  position:absolute; width:340px; height:340px; border-radius:50%;
+  background:
+    radial-gradient(circle at 30% 35%, rgba(116,231,255,.72), transparent 31%),
+    radial-gradient(circle at 70% 65%, rgba(255,78,184,.54), transparent 38%),
+    radial-gradient(circle, rgba(118,104,255,.46), rgba(118,104,255,.03) 68%, transparent 70%);
+  filter:blur(32px); opacity:.5; animation:orb 6s ease-in-out infinite;
+}
+.ring {
+  position:absolute; width:380px; height:380px; border:1px dashed rgba(255,255,255,.25);
+  border-radius:50%; animation:spin 18s linear infinite;
+}
+.hero-card {
+  position:relative; width:min(300px,100%); max-width:300px; padding:26px; border-radius:30px; margin-left:auto;
+  background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.02)), rgba(10,12,24,.74);
+  border:1px solid rgba(255,255,255,.14); backdrop-filter:blur(18px); box-shadow:var(--shadow);
+  transform-style:preserve-3d; animation:floatcard 7s ease-in-out infinite;
+}
+.avatar {
+  width:106px; height:106px; border-radius:28px; display:grid; place-items:center;
+  font:800 42px "Syne",sans-serif; background:linear-gradient(135deg,rgba(118,104,255,.32),rgba(255,78,184,.18),rgba(116,231,255,.18));
+  border:1px solid rgba(255,255,255,.13); margin-bottom:19px;
+}
+.role {
+  font-size:12px; color:var(--cyan); font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+}
+.hero-card h3 { font-size:27px; line-height:1.12; margin:7px 0 21px; }
+.stats-two { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.stat {
+  text-align:center; padding:16px 9px; border-radius:15px; background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.08);
+}
+.stat strong { display:block; font:800 26px/1 "Syne",sans-serif; margin-bottom:8px; }
+.stat span { display:block; color:var(--muted); font-size:11px; line-height:1.2; }
+
+.marquee {
+  overflow:hidden; border-block:1px solid var(--line); background:rgba(255,255,255,.017);
+}
+.marquee-track { display:flex; width:max-content; animation:marquee 28s linear infinite; }
+.marquee span {
+  display:flex; align-items:center; gap:16px; padding:16px 28px; white-space:nowrap;
+  color:#c4c9da; font:600 12px "Syne",sans-serif; letter-spacing:.08em; text-transform:uppercase;
+}
+.marquee i {
+  width:6px; height:6px; background:var(--amber); border-radius:50%; box-shadow:0 0 12px var(--amber);
+}
+
+.about-grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:22px; }
+.about-card,.skills-card,.edu-card,.lang-card,.contact-card {
+  border-radius:var(--radius); padding:26px;
+}
+.about-card h3,.skills-card h3,.edu-card h3,.lang-card h3 {
+  font-size:24px; margin:0 0 12px;
+}
+.about-card p,.lang-card p { color:var(--muted); margin:0; }
+.stack-row { display:flex; flex-wrap:wrap; gap:9px; margin-top:20px; }
+.chip {
+  padding:8px 11px; border-radius:999px; background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.09); font-size:12px; color:#dce0ef;
+  transition:transform .22s, border-color .22s;
+}
+.chip:hover { transform:translateY(-5px); border-color:rgba(116,231,255,.35); }
+.skill-list { display:grid; gap:15px; }
+.skill-head { display:flex; justify-content:space-between; gap:10px; margin-bottom:7px; font-size:13px; }
+.skill-head small { color:var(--muted); }
+.track { height:8px; border-radius:99px; background:rgba(255,255,255,.06); overflow:hidden; }
+.fill {
+  width:0; height:100%; border-radius:inherit;
+  background:linear-gradient(90deg,var(--indigo),var(--pink),var(--cyan));
+  transition:width 1.2s cubic-bezier(.2,.8,.2,1);
+}
+
+.projects-grid {
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px;
+}
+.project {
+  position:relative; overflow:hidden; border-radius:var(--radius); padding:23px;
+  display:flex; flex-direction:column; min-height:100%;
+  transition:transform .28s, border-color .28s, box-shadow .28s;
+}
+.project::before {
+  content:""; position:absolute; top:0; left:-100%; width:100%; height:3px;
+  background:linear-gradient(90deg,var(--indigo),var(--pink),var(--cyan),var(--amber));
+  transition:left .4s;
+}
+.project:hover {
+  transform:translateY(-8px); border-color:rgba(255,255,255,.18); box-shadow:0 28px 80px rgba(0,0,0,.35);
+}
+.project:hover::before { left:0; }
+.project .emoji { font-size:31px; margin-bottom:13px; }
+.project h3 { font-size:21px; line-height:1.18; margin:0 0 7px; }
+.year { color:var(--amber); font-size:12px; font-weight:800; margin-bottom:12px; }
+.project p {
+  color:var(--muted); font-size:13.5px; margin:0 0 16px; flex:1;
+}
+.tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:17px; }
+.tags span {
+  font-size:10.5px; padding:5px 7px; border-radius:8px; background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.08); color:#d4d9eb;
+}
+.project .open-project {
+  margin-top:auto; display:inline-flex; align-items:center; gap:8px; color:var(--cyan);
+  font-weight:800; font-size:13px; background:none; border:0; padding:0; cursor:pointer;
+}
+.project .open-project svg { width:16px; }
+
+.edu-grid,.contact-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:20px;
+}
+.cyan { color:var(--cyan); }
+.pills { display:flex; flex-wrap:wrap; gap:9px; margin-top:17px; }
+.pill {
+  padding:7px 10px; border-radius:999px; background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.08); font-size:11.5px; color:var(--muted);
+}
+.contact-list { display:grid; gap:10px; }
+.contact-line {
+  display:flex; align-items:center; gap:13px; padding:14px; border-radius:15px;
+  background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07);
+  transition:transform .22s, border-color .22s;
+}
+.contact-line:hover { transform:translateX(8px); border-color:rgba(116,231,255,.24); }
+.iconbox {
+  width:39px; height:39px; border-radius:11px; display:grid; place-items:center;
+  background:rgba(116,231,255,.07); color:var(--cyan); flex:none;
+}
+.contact-line small { display:block; color:var(--muted); font-size:11px; }
+.contact-line b { font-size:13px; word-break:break-word; }
+.ripples {
+  position:relative; min-height:320px; display:grid; place-items:center;
+}
+.big-avatar {
+  position:relative; z-index:2; width:145px; height:145px; border-radius:36px; display:grid; place-items:center;
+  font:800 52px "Syne",sans-serif;
+  background:linear-gradient(135deg,rgba(118,104,255,.38),rgba(255,78,184,.22),rgba(116,231,255,.18));
+  border:1px solid rgba(255,255,255,.16);
+}
+.ripple {
+  position:absolute; width:160px; height:160px; border:1px solid rgba(116,231,255,.28);
+  border-radius:50%; animation:ripple 3s ease-out infinite;
+}
+.ripple.r2 { animation-delay:1s; border-color:rgba(255,78,184,.26); }
+.ripple.r3 { animation-delay:2s; border-color:rgba(118,104,255,.28); }
+footer {
+  border-top:1px solid var(--line); padding:25px 0 34px; color:var(--muted); font-size:12px; text-align:center;
+}
+
+.detail-view { min-height:100vh; padding-top:105px; }
+.detail-top {
+  display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:30px;
+}
+.back-btn {
+  display:inline-flex; align-items:center; gap:8px; background:none; border:0; color:#dce1ef;
+  cursor:pointer; padding:9px 0; font-weight:800;
+}
+.back-btn svg { transform:rotate(180deg); }
+.detail-hero {
+  position:relative; border-radius:30px; padding:48px clamp(26px,5vw,52px); overflow:hidden; margin-bottom:30px;
+}
+.detail-hero::after {
+  content:""; position:absolute; inset:auto -10% -60% 45%; height:330px;
+  background:radial-gradient(circle,rgba(116,231,255,.16),rgba(118,104,255,.08),transparent 68%);
+  filter:blur(12px);
+}
+.detail-hero h1 {
+  margin:0; max-width:820px; font-size:clamp(40px,7vw,78px); line-height:.96; letter-spacing:-.055em;
+}
+.detail-hero p {
+  position:relative; z-index:2; max-width:850px; color:var(--muted); font-size:16px; margin:18px 0 0;
+}
+.detail-badges {
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:21px; position:relative; z-index:2;
+}
+.detail-badges span {
+  padding:7px 10px; border-radius:999px; background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.09); font-size:11.5px;
+}
+.pipeline {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:22px 0 48px;
+}
+.step {
+  position:relative; padding:18px; border-radius:17px; border:1px solid var(--line);
+  background:rgba(255,255,255,.025);
+}
+.step b {
+  display:block; color:var(--cyan); font-size:11px; letter-spacing:.1em; text-transform:uppercase; margin-bottom:7px;
+}
+.step strong { font-family:"Syne"; font-size:15px; }
+.step:not(:last-child)::after {
+  content:"→"; position:absolute; right:-11px; top:50%; transform:translateY(-50%);
+  color:rgba(255,255,255,.35);
+}
+.stage { padding:45px 0; border-top:1px solid var(--line); }
+.stage-head {
+  display:grid; grid-template-columns:.42fr 1fr; gap:30px; align-items:start; margin-bottom:24px;
+}
+.stage-num {
+  font:800 64px/1 "Syne"; color:rgba(255,255,255,.09);
+}
+.stage-head h2 {
+  margin:0 0 8px; font-size:clamp(28px,4vw,44px); letter-spacing:-.04em;
+}
+.stage-head p {
+  margin:0; color:var(--muted); max-width:760px;
+}
+.figure {
+  border-radius:22px; overflow:hidden; border:1px solid var(--line); background:#fff; box-shadow:var(--shadow);
+}
+.figure img { display:block; width:100%; height:auto; }
+.figcap {
+  padding:12px 15px; background:rgba(9,11,20,.98); color:#b9c0d3; font-size:12px;
+}
+.two-fig {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+}
+.parts-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+}
+.part-card {
+  border-radius:18px; overflow:hidden; border:1px solid var(--line); background:rgba(255,255,255,.025);
+  cursor:zoom-in; transition:transform .24s, border-color .24s;
+}
+.part-card:hover {
+  transform:translateY(-6px); border-color:rgba(116,231,255,.28);
+}
+.part-card .imgwrap {
+  height:190px; background:#fff; display:grid; place-items:center; padding:10px;
+}
+.part-card img { max-width:100%; max-height:100%; object-fit:contain; }
+.part-card .meta { padding:14px 14px 16px; }
+.part-card .meta b { display:block; font-size:14px; margin-bottom:5px; }
+.part-card .meta small { color:var(--muted); font-size:11px; }
+.metric-grid {
+  display:grid; grid-template-columns:repeat(5,1fr); gap:12px;
+}
+.metric {
+  padding:20px 14px; border-radius:18px; text-align:center; background:rgba(255,255,255,.03);
+  border:1px solid var(--line);
+}
+.metric strong {
+  display:block; font:800 clamp(22px,3vw,34px)/1 "Syne"; margin-bottom:7px;
+  background:linear-gradient(90deg,var(--cyan),var(--pink)); -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.metric span { color:var(--muted); font-size:11px; }
+.detail-actions { display:flex; flex-wrap:wrap; gap:12px; margin:34px 0 80px; }
+
+.lightbox {
+  position:fixed; inset:0; z-index:5000; background:rgba(3,4,8,.92); display:none; place-items:center; padding:26px;
+}
+.lightbox.open { display:grid; }
+.lightbox img {
+  max-width:min(1500px,94vw); max-height:88vh; border-radius:18px; box-shadow:0 30px 100px rgba(0,0,0,.6);
+}
+.lightbox button {
+  position:absolute; top:18px; right:22px; width:44px; height:44px; border-radius:50%;
+  border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); color:#fff; font-size:24px; cursor:pointer;
+}
+
+@keyframes load { to { transform:translateX(0); } }
+@keyframes shine { to { background-position:260% center; } }
+@keyframes navin { to { transform:translate(-50%,0); } }
+@keyframes pulse {
+  0% { box-shadow:0 0 0 0 rgba(116,231,255,.45); }
+  70% { box-shadow:0 0 0 10px rgba(116,231,255,0); }
+  100% { box-shadow:0 0 0 0 rgba(116,231,255,0); }
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes orb {
+  0%,100% { transform:translate(-10px,-8px) scale(.98); }
+  50% { transform:translate(16px,15px) scale(1.05); }
+}
+@keyframes floatcard {
+  0%,100% { transform:translateY(0px) rotateZ(0deg); }
+  50% { transform:translateY(-8px) rotateZ(.4deg); }
+}
+@keyframes marquee { to { transform:translateX(-50%); } }
+@keyframes ripple {
+  0% { transform:scale(.6); opacity:.9; }
+  100% { transform:scale(2.25); opacity:0; }
+}
+
+
+@media (min-width:981px) and (max-width:1500px) {
+  .hero h1 { font-size:clamp(46px,5vw,80px); }
+  .hero-grid { grid-template-columns:minmax(0,1.38fr) minmax(245px,.62fr); gap:24px; }
+  .hero-visual { padding-left:18px; }
+  .hero-card { max-width:290px; }
+}
+
+@media (max-width:980px) {
+  .hero-grid,.about-grid,.edu-grid,.contact-grid { grid-template-columns:1fr; }
+  .projects-grid { grid-template-columns:repeat(2,1fr); }
+  .pipeline { grid-template-columns:repeat(2,1fr); }
+  .step:nth-child(2)::after { display:none; }
+  .parts-grid { grid-template-columns:repeat(2,1fr); }
+  .metric-grid { grid-template-columns:repeat(3,1fr); }
+  .stage-head { grid-template-columns:1fr; }
+  .stage-num { font-size:42px; }
+}
+@media (max-width:760px) {
+  section { padding:82px 0; }
+  #home { padding-top:120px; }
+  .nav-toggle { display:block; }
+  .nav-links {
+    position:absolute; top:68px; left:0; right:0; display:none; flex-direction:column; align-items:stretch;
+    gap:0; padding:12px; border-radius:16px; background:rgba(8,10,20,.96); border:1px solid var(--line);
+  }
+  .nav-links.open { display:flex; }
+  .nav-links a { padding:12px 10px; }
+  .resume-mini { margin-top:4px; }
+  .projects-grid,.two-fig,.parts-grid { grid-template-columns:1fr; }
+  .pipeline { grid-template-columns:1fr; }
+  .step::after { display:none !important; }
+  .metric-grid { grid-template-columns:repeat(2,1fr); }
+  .hero-visual { min-height:480px; }
+  .ring { width:330px; height:330px; }
+  .orb { width:300px; height:300px; }
+  .stats-two { grid-template-columns:1fr; }
+  .cur-dot,.cur-ring { display:none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after {
+    animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  .loader { display:none; }
+  .reveal,.left-reveal,.right-reveal { opacity:1; transform:none; }
+}
+
+
+/* V4 overrides: centered hero, no right-side flagship card */
+#home{
+  min-height:100svh;
+  display:grid;
+  align-items:center;
+  padding-top:150px;
+  padding-bottom:88px;
+}
+.hero-grid{
+  grid-template-columns:1fr !important;
+  max-width:1160px;
+  margin:0 auto;
+  justify-items:center;
+}
+.hero{
+  text-align:center;
+  max-width:1080px;
+  margin:0 auto;
+}
+.hero h1{
+  font-size:clamp(44px,5.2vw,78px) !important;
+  line-height:.95 !important;
+}
+.subtitle{
+  font-size:clamp(20px,2.5vw,32px) !important;
+}
+.hero p{
+  margin-left:auto !important;
+  margin-right:auto !important;
+  max-width:900px !important;
+}
+.tag{
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+.ctas{
+  justify-content:center !important;
+}
+.hero-visual,
+.hero-card,
+.orb,
+.ring{
+  display:none !important;
+}
+@media (max-width: 900px){
+  .hero h1{font-size:clamp(38px,10vw,62px) !important;}
+}
+
+/* Final VIS side-damage cards: the approved images already include their own frame/caption. */
+.figure.self-card {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+.figure.self-card img {
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  display: block !important;
+}
+
+/* Core Expertise — evidence-based skills presentation */
+.expertise-card {
+  position: relative;
+  overflow: hidden;
+}
+.expertise-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--cyan), var(--indigo), var(--pink));
+  opacity: .78;
+}
+.expertise-list {
+  display: grid;
+  gap: 0;
+  margin-top: 4px;
+}
+.expertise-item {
+  position: relative;
+  padding: 14px 0 14px 1px;
+  border-bottom: 1px solid rgba(255,255,255,.075);
+  transition: transform .24s ease, background .24s ease;
+}
+.expertise-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 4px;
+}
+.expertise-item:hover {
+  transform: translateX(6px);
+}
+.expertise-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: var(--text);
+}
+.expertise-title strong {
+  font-weight: 700;
+}
+.expertise-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: var(--cyan);
+  box-shadow: 0 0 14px rgba(116,231,255,.55);
+}
+.expertise-item:nth-child(2) .expertise-dot { background: var(--indigo); box-shadow: 0 0 14px rgba(118,104,255,.48); }
+.expertise-item:nth-child(3) .expertise-dot { background: var(--pink); box-shadow: 0 0 14px rgba(255,78,184,.42); }
+.expertise-item:nth-child(4) .expertise-dot { background: var(--amber); box-shadow: 0 0 14px rgba(255,202,95,.42); }
+.expertise-item:nth-child(5) .expertise-dot { background: var(--cyan); }
+.expertise-detail {
+  padding-left: 17px;
+  color: var(--muted);
+  font-size: 12.8px;
+  line-height: 1.5;
+}
+@media (max-width:760px) {
+  .expertise-detail {
+    padding-left: 0;
+    font-size: 12.5px;
+  }
+}
+
+
+/* Final Acne visual presentation — preserve the entire source image. */
+#acneView .acne-visual-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+#acneView .acne-visual-grid .part-card {
+  background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+}
+#acneView .acne-visual-grid .imgwrap {
+  height: 340px;
+  padding: 12px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(116,231,255,.06), transparent 58%),
+    #0a0d18;
+}
+#acneView .acne-visual-grid .imgwrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+@media (max-width: 980px) {
+  #acneView .acne-visual-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 620px) {
+  #acneView .acne-visual-grid {
+    grid-template-columns: 1fr;
+  }
+  #acneView .acne-visual-grid .imgwrap {
+    height: 360px;
+  }
+}
+
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="loader" id="loader"><div class="load-inner"><div class="load-logo">MA</div><div class="load-bar"></div></div></div>
+<div class="cur-dot" id="dot"></div>
+<div class="cur-ring" id="ringCursor"></div>
+<div class="shell">
+<div class="nav-wrap">
+<nav>
+<a class="logo" data-main-link="" href="#home">M<b>A</b></a>
+<button aria-label="Toggle navigation" class="nav-toggle" id="navToggle">☰</button>
+<div class="nav-links" id="navLinks">
+<a data-main-link="" href="#home">Home</a>
+<a data-main-link="" href="#about">About</a>
+<a data-main-link="" href="#projects">Projects</a>
+<a data-main-link="" href="#education">Education</a>
+<a data-main-link="" href="#contact">Contact</a>
+<a class="resume-mini" download="Muhammad_Alzaghloul_CV.pdf" href="assets/resume_01_2b78129f.pdf"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"></path><path d="M4 20h16"></path></svg> Resume</a>
+</div>
+</nav>
+</div>
+<main class="view" id="mainView">
+<section id="home">
+<div class="container hero-grid">
+<div class="left-reveal hero">
+<div class="tag"><i></i> AI Engineer · Damascus, Syria</div>
+<h1><span class="name">Muhammad<br/>Alzaghloul</span></h1>
+<div class="subtitle">Computer Vision · Machine Learning · Deep Learning</div>
+<p>AI Engineer with hands-on experience developing and evaluating AI systems across computer vision, machine learning, deep learning, regression, and statistical data analysis — with a strong focus on research-driven experimentation and rigorous model evaluation.</p>
+<div class="ctas">
+<a class="btn primary" href="#projects">View All Projects</a>
+<a class="btn" download="Muhammad_Alzaghloul_CV.pdf" href="assets/resume_01_2b78129f.pdf"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"></path><path d="M4 20h16"></path></svg> Download Resume</a>
+</div>
+</div>
+</div>
+</section>
+<div class="marquee">
+<div class="marquee-track">
+<span><i></i> Computer Vision</span>
+<span><i></i> Instance Segmentation</span>
+<span><i></i> Object Detection</span>
+<span><i></i> Deep Learning</span>
+<span><i></i> Model Evaluation</span>
+<span><i></i> Machine Learning</span>
+<span><i></i> Computer Vision</span>
+<span><i></i> Instance Segmentation</span>
+<span><i></i> Object Detection</span>
+<span><i></i> Deep Learning</span>
+<span><i></i> Model Evaluation</span>
+<span><i></i> Machine Learning</span>
+</div>
+</div>
+<section id="about">
+<div class="container">
+<div class="kicker reveal">About &amp; Skills</div>
+<h2 class="section-title reveal">Research depth, practical systems.</h2>
+<p class="section-copy reveal">My work spans model development, fine-tuning, dataset curation, ablation studies, quantitative benchmarking, error analysis, and application development.</p>
+<div class="about-grid">
+<article class="about-card glass left-reveal">
+<h3>What I build</h3>
+<p>I build AI systems across computer vision, deep learning, machine learning, and NLP, with project work spanning vehicle inspection, instance segmentation, image classification, Transformer-based Arabic NLP, regression, statistical analysis, and application development.</p>
+<div class="stack-row">
+<span class="chip">PyTorch</span>
+<span class="chip">OpenCV</span>
+<span class="chip">YOLO / YOLO-Seg</span>
+<span class="chip">SAM</span>
+<span class="chip">MediaPipe</span>
+<span class="chip">Scikit-learn</span>
+<span class="chip">Hugging Face Transformers</span>
+<span class="chip">FastAPI</span>
+<span class="chip">Flutter</span>
+</div>
+</article>
+<article class="skills-card glass right-reveal expertise-card">
+<h3>Core Expertise</h3>
+<div class="expertise-list">
+<div class="expertise-item">
+<div class="expertise-title"><span class="expertise-dot"></span><strong>Computer Vision</strong></div>
+<div class="expertise-detail">Object Detection · Instance Segmentation · Image Classification · Image Processing</div>
+</div>
+<div class="expertise-item">
+<div class="expertise-title"><span class="expertise-dot"></span><strong>Deep Learning</strong></div>
+<div class="expertise-detail">CNN Architectures · ViT-based Models · Transfer Learning · Fine-Tuning · Feature Fusion</div>
+</div>
+<div class="expertise-item">
+<div class="expertise-title"><span class="expertise-dot"></span><strong>Machine Learning</strong></div>
+<div class="expertise-detail">Regression · Classification · Feature Engineering · Cross-Validation · Model Evaluation</div>
+</div>
+<div class="expertise-item">
+<div class="expertise-title"><span class="expertise-dot"></span><strong>NLP</strong></div>
+<div class="expertise-detail">Transformer-based NLP · Token Classification · Arabic Text Processing</div>
+</div>
+<div class="expertise-item">
+<div class="expertise-title"><span class="expertise-dot"></span><strong>Experimentation &amp; Analysis</strong></div>
+<div class="expertise-detail">Dataset Curation · Ablation Studies · Error Analysis · Statistical Analysis</div>
+</div>
+</div>
+</article>
+</div>
+</div>
+</section>
+<section id="projects">
+<div class="container">
+<div class="kicker reveal">Selected Projects</div>
+<h2 class="section-title reveal">Projects that show the workflow.</h2>
+<p class="section-copy reveal">Selected projects highlighting practical work from data preparation and preprocessing through model development, experimentation, evaluation, and analysis.</p>
+<div class="projects-grid">
+<article class="project glass reveal">
+<div class="emoji">🚘</div>
+<h3>Vehicle Inspection System (VIS)</h3>
+<div class="year">Graduation Project · 2026</div>
+<p>Multi-view vehicle inspection combining 20-class vehicle-part instance segmentation with 8-class external-damage detection and segmentation, SAM-assisted refinement, benchmarking, and ensemble methods.</p>
+<div class="tags">
+<span>YOLO26L-Seg</span><span>SAM</span><span>PyTorch</span><span>OpenCV</span><span>Instance Segmentation</span>
+</div>
+<button class="open-project" data-open-vis="">View Project Details <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</article>
+<article class="project glass reveal">
+<div class="emoji">🧬</div>
+<h3>Acne Severity Classification &amp; Lesion Analysis</h3>
+<div class="year">2025</div>
+<p>Developed an acne severity classification and lesion-analysis workflow using MediaPipe face-aware preprocessing, lesion-focused enhancement, RGB and Adaptive-LoG image representations, candidate lesion visualization, ResNet50 transfer learning, class-weighted training, and comparative architecture evaluation.</p>
+<div class="tags"><span>ResNet50</span><span>MediaPipe</span><span>Adaptive-LoG</span><span>Transfer Learning</span></div>
+<button class="open-project" data-open-acne="">View Project Details <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</article>
+<article class="project glass reveal">
+<div class="emoji">✍️</div>
+<h3>Arabic Punctuation Restoration</h3>
+<div class="year">2025</div>
+<p>AraBERTv2 token-classification pipeline with Arabic normalization, subword-label alignment, class-imbalance handling, checkpointing, and external-domain evaluation.</p>
+<div class="tags"><span>AraBERTv2</span><span>PyTorch</span><span>Transformers</span><span>NLP</span></div>
+</article>
+<article class="project glass reveal">
+<div class="emoji">💸</div>
+<h3>Car Price Prediction</h3>
+<div class="year">2025</div>
+<p>End-to-end regression workflow with EDA, outlier handling, feature engineering, categorical encoding, train-only scaling, and cross-validated model evaluation.</p>
+<div class="tags"><span>Scikit-learn</span><span>Linear Regression</span><span>Feature Engineering</span></div>
+</article>
+<article class="project glass reveal">
+<div class="emoji">📊</div>
+<h3>Uganda RCT Data Analysis — A Mother's Voice</h3>
+<div class="year">Coursework</div>
+<p>Multi-level survey data cleaning and linkage across family and child records, followed by EDA and Spearman correlation analysis.</p>
+<div class="tags"><span>Pandas</span><span>NumPy</span><span>SciPy</span><span>Statistical Analysis</span></div>
+</article>
+<article class="project glass reveal">
+<div class="emoji">📱</div>
+<h3>Hashtag Social Media Application</h3>
+<div class="year">2025</div>
+<p>Arabic-first Flutter social application using BLoC, repository-based data access, REST integration, media workflows, and on-device video trimming.</p>
+<div class="tags"><span>Flutter</span><span>Dart</span><span>BLoC</span><span>Dio / REST APIs</span></div>
+</article>
+</div>
+</div>
+</section>
+<section id="education">
+<div class="container">
+<div class="kicker reveal">Education</div>
+<h2 class="section-title reveal">Academic foundation in Artificial Intelligence.</h2>
+<div class="edu-grid">
+<article class="edu-card glass left-reveal">
+<h3>B.Sc. in Artificial Intelligence</h3>
+<div class="cyan">Damascus University</div>
+<div class="pills"><span class="pill">2026</span><span class="pill">Damascus, Syria</span><span class="pill">Informatics / AI track</span></div>
+</article>
+<article class="lang-card glass right-reveal">
+<h3>Languages</h3>
+<div class="pills"><span class="pill">Arabic</span><span class="pill">English</span></div>
+</article>
+</div>
+</div>
+</section>
+<section id="contact">
+<div class="container">
+<div class="kicker reveal">Contact</div>
+<h2 class="section-title reveal">Build the next AI system.</h2>
+<div class="contact-grid">
+<div class="contact-card glass left-reveal">
+<div class="contact-list">
+<a class="contact-line" href="mailto:muhammad.al.zaghloul@gmail.com"><span class="iconbox"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M3 6h18v12H3z"></path><path d="m3 7 9 7 9-7"></path></svg></span><span><small>Email</small><b>muhammad.al.zaghloul@gmail.com</b></span></a>
+<a class="contact-line" href="tel:+963988708275"><span class="iconbox"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 3 4 5c-1 8 7 16 15 15l2-3-5-3-2 2c-3-1-6-4-7-7l2-2z"></path></svg></span><span><small>Phone</small><b>+963 988 708 275</b></span></a>
+<div class="contact-line"><span class="iconbox"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"></path><circle cx="12" cy="9" r="2"></circle></svg></span><span><small>Location</small><b>Damascus, Syria</b></span></div>
+<a class="contact-line" href="https://github.com/muhammad-alzaghloul" rel="noopener" target="_blank"><span class="iconbox"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3 19c.5.1.7-.2.7-.5v-2c-3 .7-3.7-1.3-3.7-1.3-.5-1.4-1.3-1.8-1.3-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.8-1.6-2.4-.3-5-1.2-5-5.4 0-1.2.4-2.2 1.2-3-.1-.3-.5-1.4.1-3 0 0 1-.3 3.2 1.1a11 11 0 0 1 5.8 0C18 3.7 19 4 19 4c.6 1.6.2 2.7.1 3 .8.8 1.2 1.8 1.2 3 0 4.2-2.6 5-5 5.3.4.3.8 1 .8 2v3c0 .3.2.6.7.5A10 10 0 0 0 12 2z"></path></svg></span><span><small>GitHub</small><b>github.com/muhammad-alzaghloul</b></span></a>
+<a class="contact-line" download="Muhammad_Alzaghloul_CV.pdf" href="assets/resume_01_2b78129f.pdf"><span class="iconbox"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"></path><path d="M4 20h16"></path></svg></span><span><small>Resume</small><b>Download PDF</b></span></a>
+</div>
+</div>
+<div class="ripples right-reveal">
+<div class="ripple"></div><div class="ripple r2"></div><div class="ripple r3"></div><div class="big-avatar">MA</div>
+</div>
+</div>
+</div>
+</section>
+<footer><div class="container">Muhammad Alzaghloul · AI Engineer · Portfolio 2026</div></footer>
+</main>
+<main class="view hidden detail-view" id="visView">
+<div class="container">
+<div class="detail-top">
+<button class="back-btn" data-back-main=""><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg> Back to Projects</button>
+</div>
+<section class="detail-hero glass">
+<div class="kicker">VIS Case Study</div>
+<h1>Vehicle Inspection System</h1>
+<p>Multi-view vehicle inspection combining <strong>vehicle-part instance segmentation</strong> with <strong>external-damage detection and segmentation</strong>. The pipeline integrates SAM-assisted refinement, part-level reasoning, and ensemble-based damage analysis to associate external damage with structural vehicle regions across multiple views.</p>
+<div class="detail-badges">
+<span>Graduation Project · 2026</span>
+<span>YOLO26L-Seg</span>
+<span>SAM</span>
+<span>PyTorch</span>
+<span>OpenCV</span>
+<span>20 Part Classes</span>
+<span>8 Damage Classes</span>
+</div>
+</section>
+<div class="pipeline">
+<div class="step"><b>Stage 01</b><strong>Multi-view vehicle image</strong></div>
+<div class="step"><b>Stage 02</b><strong>Vehicle-part segmentation</strong></div>
+<div class="step"><b>Stage 03</b><strong>Instance-level part extraction</strong></div>
+<div class="step"><b>Stage 04</b><strong>Damage analysis &amp; decision</strong></div>
+</div>
+<section class="stage">
+<div class="stage-head">
+<div class="stage-num">01</div>
+<div>
+<h2>Vehicle Part Segmentation</h2>
+<p>The first stage assigns instance-aware segmentation masks to structural vehicle parts, providing spatial context for downstream part extraction, damage localization, and part-aware inspection across multiple vehicle views.</p>
+</div>
+</div>
+<div class="two-fig">
+<figure class="figure zoomable reveal">
+<img alt="Clean side-view segmentation result" src="assets/asset_01_25999d7e.webp"/>
+<figcaption class="figcap">Vehicle Part Segmentation — Side View</figcaption>
+</figure>
+<figure class="figure zoomable reveal">
+<img alt="Clean rear-view segmentation result" src="assets/asset_02_2de75a17.webp"/>
+<figcaption class="figcap">Vehicle Part Segmentation — Rear View</figcaption>
+</figure>
+</div>
+</section>
+<section class="stage">
+<div class="stage-head">
+<div class="stage-num">02</div>
+<div>
+<h2>Instance-Level Part Extraction</h2>
+<p>Segmented part instances are isolated into localized regions, enabling part-aware downstream analysis and more precise association between detected damage and vehicle structure.</p>
+</div>
+</div>
+<div class="parts-grid">
+<article class="part-card zoomable reveal">
+<div class="imgwrap"><img alt="Front Door instance crop" src="assets/asset_03_b8354cbe.webp"/></div>
+<div class="meta"><b>Front Door</b><small>YOLO confidence 0.961</small></div>
+</article>
+<article class="part-card zoomable reveal">
+<div class="imgwrap"><img alt="Fender instance crop" src="assets/asset_04_1e14e38f.webp"/></div>
+<div class="meta"><b>Fender</b><small>YOLO confidence 0.953</small></div>
+</article>
+<article class="part-card zoomable reveal">
+<div class="imgwrap"><img alt="Wheel instance crop" src="assets/asset_05_70ce4ed1.webp"/></div>
+<div class="meta"><b>Wheel</b><small>YOLO confidence 0.902</small></div>
+</article>
+<article class="part-card zoomable reveal">
+<div class="imgwrap"><img alt="Back Glass instance crop" src="assets/asset_06_809aa826.webp"/></div>
+<div class="meta"><b>Back Glass</b><small>YOLO confidence 0.929</small></div>
+</article>
+<article class="part-card zoomable reveal">
+<div class="imgwrap"><img alt="Back Bumper instance crop" src="assets/asset_07_e206bd7b.webp"/></div>
+<div class="meta"><b>Back Bumper</b><small>YOLO confidence 0.869</small></div>
+</article>
+<article class="part-card zoomable reveal">
+<div class="imgwrap"><img alt="Tailgate instance crop" src="assets/asset_08_778b0372.webp"/></div>
+<div class="meta"><b>Tailgate</b><small>YOLO confidence 0.696</small></div>
+</article>
+</div>
+</section>
+<section class="stage">
+<div class="stage-head">
+<div class="stage-num">03</div>
+<div>
+<h2>External Damage Analysis</h2>
+<p>After part-level understanding, the damage pipeline consolidates specialized detection and segmentation evidence. The decision layer separates high-confidence confirmed damage from broader confirmed + review candidates for cases requiring additional inspection.</p>
+</div>
+</div>
+<h3 style="margin:0 0 14px; font-size:21px;">Side View</h3>
+<div class="two-fig" style="margin-bottom:28px;">
+<figure class="figure zoomable reveal self-card">
+<img alt="Confirmed Damage — Side View" src="assets/asset_01_87ef9106.png"/>
+</figure>
+<figure class="figure zoomable reveal self-card">
+<img alt="Confirmed + Review Candidates — Side View" src="assets/asset_02_2a0e119d.png"/>
+</figure>
+</div>
+<h3 style="margin:0 0 14px; font-size:21px;">Rear View</h3>
+<div class="two-fig">
+<figure class="figure zoomable reveal">
+<img alt="Rear-view confirmed vehicle damage result" src="assets/asset_09_ac20ea5b.webp"/>
+<figcaption class="figcap">Confirmed Damage — Rear View</figcaption>
+</figure>
+<figure class="figure zoomable reveal">
+<img alt="Rear-view confirmed and review candidates" src="assets/asset_10_2034fce3.webp"/>
+<figcaption class="figcap">Confirmed + Review Candidates — Rear View</figcaption>
+</figure>
+</div>
+</section>
+<section class="stage">
+<div class="stage-head">
+<div class="stage-num">04</div>
+<div>
+<h2>Quantitative Results</h2>
+<p>Part segmentation was benchmarked against Mask R-CNN, GCNet, PANet, CBNet, and HTC, while the external-damage pipeline was evaluated using aggregate F1 and recall. The metrics below summarize the final reported evaluation results.</p>
+</div>
+</div>
+<div class="metric-grid">
+<div class="metric"><strong>90.9</strong><span>AP50</span></div>
+<div class="metric"><strong>73.4</strong><span>AP75</span></div>
+<div class="metric"><strong>68.5</strong><span>AP50-95</span></div>
+<div class="metric"><strong>72.0%</strong><span>Damage F1</span></div>
+<div class="metric"><strong>80.4%</strong><span>Damage Recall</span></div>
+</div>
+</section>
+<section class="stage">
+<div class="stage-head">
+<div class="stage-num">05</div>
+<div>
+<h2>Technical Highlights</h2>
+<p>Core implementation components include a SAV-based segmentation methodology, SAM-assisted mask refinement, confidence-aware selection, hybrid refinement, specialized YOLO detectors, multi-scale processing, Boundary Loss, and ensemble voting.</p>
+</div>
+</div>
+<div class="stack-row">
+<span class="chip">SAV-based methodology</span>
+<span class="chip">SAM-assisted refinement</span>
+<span class="chip">Confidence-aware selection</span>
+<span class="chip">Hybrid refinement</span>
+<span class="chip">Specialized YOLO detectors</span>
+<span class="chip">Multi-scale processing</span>
+<span class="chip">Boundary Loss</span>
+<span class="chip">Ensemble voting</span>
+</div>
+</section>
+<div class="detail-actions">
+<button class="btn primary" data-back-main="">Back to Projects <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+<a class="btn" download="Muhammad_Alzaghloul_CV.pdf" href="assets/resume_01_2b78129f.pdf"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"></path><path d="M4 20h16"></path></svg> Download Resume</a>
+</div>
+</div>
+</main>
+</div>
+<main class="view hidden detail-view" id="acneView">
+<div class="container">
+<div class="detail-top">
+<button class="back-btn" data-back-main=""><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg> Back to Projects</button>
+</div>
+<section class="detail-hero glass">
+<div class="kicker">Computer Vision Project</div>
+<h1>Acne Severity Classification &amp; Lesion Analysis</h1>
+<p>The pipeline starts from a <strong>single facial image</strong> and applies face-aware preprocessing to isolate relevant skin regions and reduce background and non-skin interference. From the processed image, complementary <strong>RGB and Adaptive-LoG representations</strong> are generated to preserve overall facial appearance while emphasizing acne-related lesion patterns. A ResNet50-based classification architecture then learns and combines the resulting visual features for acne severity classification, supported by transfer learning, feature fusion, class-weighted training, and comparative model evaluation.</p>
+<div class="detail-badges">
+<span>2025</span>
+<span>ResNet50</span>
+<span>MediaPipe</span>
+<span>OpenCV</span>
+<span>Adaptive-LoG</span>
+<span>Transfer Learning</span>
+<span>Image Analysis</span>
+</div>
+</section>
+<div class="pipeline">
+<div class="step"><b>Stage 01</b><strong>Input facial image</strong></div>
+<div class="step"><b>Stage 02</b><strong>Face-aware preprocessing</strong></div>
+<div class="step"><b>Stage 03</b><strong>RGB &amp; Adaptive-LoG feature learning</strong></div>
+<div class="step"><b>Stage 04</b><strong>Severity classification &amp; evaluation</strong></div>
+</div>
+<section class="stage">
+<div class="stage-head">
+<div class="stage-num">01</div>
+<div>
+<h2>Input Preparation &amp; Face Isolation</h2>
+<p>The workflow begins with a single facial image. MediaPipe-based face-aware preprocessing isolates the relevant skin region, while OpenCV-based enhancement and Adaptive-LoG processing generate lesion-oriented analytical views. The sequence below presents the original input followed by progressively derived processing outputs used for interpretation, analysis, and model development.</p>
+</div>
+</div>
+<div class="parts-grid acne-visual-grid">
+
+
+
+
+
+<article class="part-card zoomable reveal"><div class="imgwrap"><img alt="Clinical Input Image" src="assets/asset_03_088c5a76.png"/></div><div class="meta"><b>Clinical Input Image</b><small>Original facial image used as the acne-analysis input.</small></div></article><article class="part-card zoomable reveal"><div class="imgwrap"><img alt="Contrast-Enhanced Analytical View" src="assets/asset_04_0325c000.png"/></div><div class="meta"><b>Contrast-Enhanced Analytical View</b><small>Processed view used to inspect lesion patterns and response consistency.</small></div></article><article class="part-card zoomable reveal"><div class="imgwrap"><img alt="Pseudo-color Response Map" src="assets/asset_05_68a203c4.png"/></div><div class="meta"><b>Pseudo-color Response Map</b><small>Acne-prone regions emphasized through color-mapped response enhancement.</small></div></article><article class="part-card zoomable reveal"><div class="imgwrap"><img alt="Normalized Heatmap Mask" src="assets/asset_06_3d271007.png"/></div><div class="meta"><b>Normalized Heatmap Mask</b><small>Region-focused severity distribution after masking and normalization.</small></div></article><article class="part-card zoomable reveal"><div class="imgwrap"><img alt="Lesion Candidate Localization" src="assets/asset_07_2a50df62.png"/></div><div class="meta"><b>Lesion Candidate Localization</b><small>Candidate lesions visualized as structured evidence for inspection and analysis.</small></div></article></div>
+</section>
+<section class="stage">
+<div class="stage-head">
+<div class="stage-num">03</div>
+<div>
+<h2>Feature Learning &amp; Classification</h2>
+<p>A ResNet50-based classification architecture learns discriminative acne-severity patterns from the processed image representations generated by the pipeline. ImageNet transfer learning is used for initialization, class-weighted training helps address imbalance across severity categories, and comparative experiments are used to study the effect of preprocessing, representation quality, and architecture design on final performance.</p>
+</div>
+</div>
+<div class="stack-row">
+<span class="chip">ResNet50 Feature Learning</span>
+<span class="chip">RGB &amp; Adaptive-LoG Representations</span>
+<span class="chip">MediaPipe face-aware preprocessing</span>
+<span class="chip">OpenCV image enhancement</span>
+<span class="chip">Transfer Learning</span>
+<span class="chip">Class-weighted training</span>
+<span class="chip">Architecture comparison</span>
+<span class="chip">Visual error analysis</span>
+</div>
+</section>
+<section class="stage">
+<div class="stage-head">
+<div class="stage-num">04</div>
+<div>
+<h2>Technical Scope &amp; Outcomes</h2>
+<p>The completed workflow combines face-aware preprocessing, lesion-focused enhancement, RGB and Adaptive-LoG representation generation, candidate lesion visualization, transfer learning, class-imbalance handling, comparative experimentation, quantitative evaluation, and interpretable visual analysis within a unified acne-severity classification pipeline.</p>
+</div>
+</div>
+<div class="detail-actions">
+<button class="btn primary" data-back-main="">Back to Projects</button>
+</div>
+</section>
+</div>
+</main>
+<div class="lightbox" id="imageLightbox">
+<button aria-label="Close image" id="closeLightbox">×</button>
+<img alt="" id="lightboxImage"/>
+</div>
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const loader = document.getElementById('loader');
+  if(reduce) loader.classList.add('done'); else setTimeout(() => loader.classList.add('done'), 1900);
+
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  const dot = document.getElementById('dot');
+  const ring = document.getElementById('ringCursor');
+  if(matchMedia('(pointer:fine)').matches && !reduce) {
+    let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
+    addEventListener('pointermove', e => {
+      mx = e.clientX; my = e.clientY; dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    });
+    (function follow() {
+      rx += (mx - rx) * .14; ry += (my - ry) * .14;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(follow);
+    })();
+    document.querySelectorAll('a,button,.project,.chip,.zoomable').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hot'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hot'));
+    });
+  }
+
+  const c = document.getElementById('particles');
+  const ctx = c.getContext('2d');
+  let pts = [];
+  const pal = ['#7668ff', '#ff4eb8', '#74e7ff', '#ffca5f'];
+  function resize() {
+    const d = Math.min(devicePixelRatio || 1, 2);
+    c.width = innerWidth * d; c.height = innerHeight * d;
+    c.style.width = innerWidth + 'px'; c.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    pts = Array.from({length: Math.max(28, Math.min(84, Math.floor(innerWidth / 19)))}, (_, i) => ({
+      x: Math.random() * innerWidth,
+      y: Math.random() * innerHeight,
+      vx: (Math.random() - .5) * .34,
+      vy: (Math.random() - .5) * .34,
+      r: Math.random() * 1.6 + .7,
+      col: pal[i % pal.length]
+    }));
+  }
+  function rgba(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${n >> 16}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+  }
+  function draw() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for(let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < -20) p.x = innerWidth + 20;
+      if(p.x > innerWidth + 20) p.x = -20;
+      if(p.y < -20) p.y = innerHeight + 20;
+      if(p.y > innerHeight + 20) p.y = -20;
+      ctx.beginPath();
+      ctx.fillStyle = rgba(p.col, .7);
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+      for(let j = i + 1; j < pts.length; j++) {
+        const q = pts[j];
+        const d = Math.hypot(p.x - q.x, p.y - q.y);
+        if(d < 125) {
+          ctx.beginPath();
+          ctx.strokeStyle = rgba(p.col, (1 - d / 125) * .12);
+          ctx.lineWidth = .65;
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  resize(); draw(); addEventListener('resize', resize);
+
+  const obs = new IntersectionObserver(entries => entries.forEach(entry => {
+    if(entry.isIntersecting) {
+      entry.target.classList.add('shown');
+      obs.unobserve(entry.target);
+    }
+  }), { threshold:.12 });
+  document.querySelectorAll('.reveal,.left-reveal,.right-reveal').forEach(el => obs.observe(el));
+
+  const sobs = new IntersectionObserver(entries => entries.forEach(entry => {
+    if(entry.isIntersecting) {
+      const fill = entry.target.querySelector('.fill');
+      fill.style.width = (+entry.target.dataset.level || 0) + '%';
+      sobs.unobserve(entry.target);
+    }
+  }), { threshold:.5 });
+  document.querySelectorAll('.skill').forEach(el => sobs.observe(el));
+
+  const hc = document.getElementById('heroCard');
+  if(hc && matchMedia('(pointer:fine)').matches && !reduce) {
+    hc.parentElement.addEventListener('pointermove', e => {
+      const r = hc.parentElement.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5;
+      const y = (e.clientY - r.top) / r.height - .5;
+      hc.style.animationPlayState = 'paused';
+      hc.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 10}deg)`;
+    });
+    hc.parentElement.addEventListener('pointerleave', () => {
+      hc.style.transform = '';
+      hc.style.animationPlayState = 'running';
+    });
+  }
+
+  const main = document.getElementById('mainView');
+  const vis = document.getElementById('visView');
+  const acne = document.getElementById('acneView');
+
+  function revealDetail(selector) {
+    setTimeout(() => document.querySelectorAll(selector + ' .reveal,' + selector + ' .left-reveal,' + selector + ' .right-reveal').forEach(el => el.classList.add('shown')), 50);
+  }
+  function showVIS(push = true) {
+    main.classList.add('hidden');
+    acne.classList.add('hidden');
+    vis.classList.remove('hidden');
+    window.scrollTo({ top:0, behavior:'instant' });
+    if(push) history.pushState({ view:'vis' }, '', '#project-vis');
+    revealDetail('#visView');
+  }
+  function showAcne(push = true) {
+    main.classList.add('hidden');
+    vis.classList.add('hidden');
+    acne.classList.remove('hidden');
+    window.scrollTo({ top:0, behavior:'instant' });
+    if(push) history.pushState({ view:'acne' }, '', '#project-acne');
+    revealDetail('#acneView');
+  }
+  function showMain(push = true) {
+    vis.classList.add('hidden');
+    acne.classList.add('hidden');
+    main.classList.remove('hidden');
+    if(push) history.pushState({ view:'main' }, '', '#projects');
+    setTimeout(() => document.getElementById('projects').scrollIntoView({ behavior:'smooth' }), 20);
+  }
+  document.querySelectorAll('[data-open-vis]').forEach(btn => btn.addEventListener('click', () => showVIS()));
+  document.querySelectorAll('[data-open-acne]').forEach(btn => btn.addEventListener('click', () => showAcne()));
+  document.querySelectorAll('[data-back-main]').forEach(btn => btn.addEventListener('click', () => showMain()));
+  document.querySelectorAll('[data-main-link]').forEach(link => link.addEventListener('click', () => {
+    if(!vis.classList.contains('hidden') || !acne.classList.contains('hidden')) {
+      vis.classList.add('hidden');
+      acne.classList.add('hidden');
+      main.classList.remove('hidden');
+    }
+  }));
+  addEventListener('popstate', () => {
+    if(location.hash === '#project-vis') showVIS(false);
+    else if(location.hash === '#project-acne') showAcne(false);
+    else showMain(false);
+  });
+  if(location.hash === '#project-vis') showVIS(false);
+  if(location.hash === '#project-acne') showAcne(false);
+
+  const lightbox = document.getElementById('imageLightbox');
+  const lbimg = document.getElementById('lightboxImage');
+  document.querySelectorAll('.zoomable').forEach(el => el.addEventListener('click', () => {
+    const img = el.querySelector('img');
+    if(!img) return;
+    lbimg.src = img.src;
+    lbimg.alt = img.alt;
+    lightbox.classList.add('open');
+  }));
+  const closeLightbox = () => lightbox.classList.remove('open');
+  document.getElementById('closeLightbox').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if(e.target === lightbox) closeLightbox(); });
+  addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+})();
+</script>
+</body>
+</html>

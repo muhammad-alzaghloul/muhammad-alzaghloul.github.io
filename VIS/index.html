@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#020b16">
+<meta name="description" content="VIS — Vehicle Intelligence System">
+<title>VIS — Vehicle Intelligence System</title>
+<style>
+:root{
+  --bg:#020912;--bg-soft:#061525;--panel:#071a2d;--panel-2:#09223a;
+  --white:#f5fbff;--muted:#a7bed0;--muted-2:#718aa0;
+  --cyan:#50e7ff;--cyan-2:#18c9ff;--blue:#2f7cff;--violet:#7768ff;
+  --green:#45e9aa;--amber:#ffc96a;--red:#ff6377;
+  --line:rgba(91,225,255,.15);--line-soft:rgba(255,255,255,.065);
+  --shadow:0 30px 110px rgba(0,0,0,.38);--max:1420px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--white);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 10% 4%,rgba(51,167,255,.09),transparent 28%),
+    radial-gradient(circle at 90% 8%,rgba(80,231,255,.08),transparent 30%),
+    linear-gradient(180deg,#020912 0%,#06111e 46%,#020912 100%);
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;
+  background-image:linear-gradient(rgba(80,231,255,.025) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(80,231,255,.025) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.68),transparent 95%)
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:radial-gradient(circle at 26% 20%,rgba(80,231,255,.045),transparent 26%),
+             radial-gradient(circle at 78% 33%,rgba(119,104,255,.045),transparent 31%)
+}
+canvas#network{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.32}
+a{color:inherit}button{font:inherit}img{max-width:100%}
+.max{width:min(calc(100% - 42px),var(--max));margin:auto}
+.section{padding:116px 0;position:relative;border-top:1px solid rgba(80,231,255,.045)}
+.section::before{
+  content:"";position:absolute;left:50%;top:-1px;width:min(900px,70vw);height:1px;transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent,rgba(80,231,255,.2),rgba(119,104,255,.1),transparent)
+}
+.section:nth-of-type(even){background:linear-gradient(180deg,rgba(6,20,34,.12),rgba(2,9,18,.02))}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;color:#7eeeff;font-size:11px;font-weight:900;
+  letter-spacing:.16em;text-transform:uppercase;margin:0 0 13px
+}
+.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 15px var(--cyan)}
+h1,h2,h3,p{margin-top:0}
+h2{font-size:clamp(38px,4.8vw,70px);line-height:1.05;letter-spacing:-.045em;margin:12px 0 18px}
+.section-head{max-width:950px;margin-bottom:46px}
+.section-lead{font-size:17px;line-height:1.9;color:var(--muted);max-width:900px}
+.glass{
+  background:linear-gradient(180deg,rgba(11,34,57,.74),rgba(4,16,29,.82));
+  border:1px solid rgba(93,225,255,.11);box-shadow:var(--shadow);
+  backdrop-filter:blur(17px);border-radius:26px
+}
+.reveal{opacity:0;transform:translate3d(0,24px,0) scale(.989);transition:opacity .72s cubic-bezier(.22,.7,.26,1),transform .72s cubic-bezier(.22,.7,.26,1)}
+.reveal.show{opacity:1;transform:none}
+.stagger>.reveal:nth-child(2){transition-delay:.07s}.stagger>.reveal:nth-child(3){transition-delay:.14s}.stagger>.reveal:nth-child(4){transition-delay:.21s}.stagger>.reveal:nth-child(5){transition-delay:.28s}
+
+/* loader */
+.loader{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#01060d;transition:opacity .65s ease,visibility .65s ease}
+.loader.hide{opacity:0;visibility:hidden}.loader-box{text-align:center}
+.loader-logo{
+  font-size:70px;font-weight:950;letter-spacing:-.08em;
+  background:linear-gradient(100deg,#fff,#7eeeff,#2f7cff,#fff);background-size:240% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 2.8s linear infinite
+}
+.loader-sub{font-size:10px;letter-spacing:.3em;color:#7893a9;text-transform:uppercase}
+.loader-line{width:280px;height:2px;background:#0b1d2c;border-radius:999px;overflow:hidden;margin:22px auto 0}
+.loader-line i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet));animation:load 1.35s ease forwards}
+
+/* cursor */
+.cursor-dot,.cursor-ring{position:fixed;z-index:9998;pointer-events:none;border-radius:50%;transform:translate(-50%,-50%)}
+.cursor-dot{width:5px;height:5px;background:var(--cyan);box-shadow:0 0 15px var(--cyan)}
+.cursor-ring{width:31px;height:31px;border:1px solid rgba(80,231,255,.46);transition:width .2s,height .2s,border-color .2s}
+@media(pointer:coarse){.cursor-dot,.cursor-ring{display:none}}
+
+/* navigation */
+.scroll-progress{position:fixed;z-index:150;left:0;right:0;top:0;height:2px}
+.scroll-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet));box-shadow:0 0 12px var(--cyan)}
+.navbar{
+  position:fixed;z-index:130;top:12px;left:50%;transform:translateX(-50%);
+  width:min(calc(100% - 24px),1440px);height:72px;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 16px;
+  border:1px solid rgba(255,255,255,.075);border-radius:20px;
+  background:rgba(2,9,18,.76);backdrop-filter:blur(22px);box-shadow:0 18px 60px rgba(0,0,0,.28)
+}
+.brand{display:flex;align-items:center;gap:16px;text-decoration:none}
+.brand-vis{
+  font-size:33px;line-height:1;font-weight:950;letter-spacing:-.09em;
+  background:linear-gradient(105deg,#fff 0%,#d9f9ff 24%,#58eaff 48%,#2f7cff 76%,#fff 100%);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite
+}
+.brand-divider{width:1px;height:37px;background:linear-gradient(transparent,rgba(111,212,255,.5),transparent)}
+.brand-copy{display:flex;flex-direction:column;gap:2px}
+.brand-copy strong{font-size:10px;letter-spacing:.22em;color:#dff7ff}
+.brand-copy small{font-size:8px;letter-spacing:.18em;color:#6f8da5}
+.navlinks{display:flex;align-items:center;gap:4px}
+.navlinks a{position:relative;text-decoration:none;font-size:12px;color:#cadbe7;padding:10px 11px;border-radius:10px;transition:.22s}
+.navlinks a::after{content:"";position:absolute;bottom:4px;left:20%;right:20%;height:1px;background:linear-gradient(90deg,var(--cyan),var(--blue));transform:scaleX(0);transition:.22s}
+.navlinks a:hover{background:rgba(255,255,255,.035);color:#fff}.navlinks a:hover::after{transform:scaleX(1)}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.lang-btn,.menu-btn{border:1px solid rgba(80,231,255,.17);background:rgba(80,231,255,.045);color:#e2fbff;border-radius:12px;cursor:pointer;transition:.22s}
+.lang-btn{padding:9px 12px;font-size:11px;font-weight:900}.menu-btn{display:none;width:42px;height:42px}
+.lang-btn:hover,.menu-btn:hover{border-color:rgba(80,231,255,.3);box-shadow:0 0 22px rgba(80,231,255,.08)}
+.mobile-menu{display:none}
+
+/* buttons */
+.btn{
+  position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px 19px;border-radius:14px;text-decoration:none;font-size:13px;font-weight:900;
+  transition:transform .23s ease,box-shadow .23s ease,border-color .23s ease
+}
+.btn::before{content:"";position:absolute;inset:-1px;transform:translateX(-125%);background:linear-gradient(105deg,transparent,rgba(255,255,255,.38),transparent);transition:transform .55s ease}
+.btn:hover::before{transform:translateX(125%)}.btn:hover{transform:translateY(-3px) scale(1.015)}
+.btn.primary{color:#02131c;background:linear-gradient(90deg,#51e9ff,#9af7ff);box-shadow:0 12px 36px rgba(80,231,255,.18)}
+.btn.secondary{color:#e8f6ff;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.028)}
+.btn.secondary:hover{border-color:rgba(80,231,255,.25);box-shadow:0 14px 42px rgba(28,118,255,.08)}
+
+/* hero */
+.hero{min-height:100svh;padding:126px 0 52px;display:flex;align-items:center;overflow:hidden;position:relative}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);grid-template-areas:"visual content";align-items:center;gap:64px;direction:ltr}
+.hero-content{grid-area:content;direction:rtl;text-align:right;position:relative;z-index:5}
+html[dir="ltr"] .hero-content{direction:ltr;text-align:left}
+.status-pill{display:inline-flex;align-items:center;gap:9px;padding:8px 12px;border-radius:999px;background:rgba(69,233,170,.055);border:1px solid rgba(69,233,170,.18);color:#bcf9df;font-size:11px;font-weight:850}
+.status-pill i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 15px var(--green);animation:pulse 1.7s ease-in-out infinite}
+.hero-kicker{font-size:12px;color:#75eaff;letter-spacing:.16em;font-weight:900;margin:21px 0 0}
+.hero h1{font-size:clamp(58px,6vw,94px);line-height:.98;letter-spacing:-.055em;margin:22px 0 20px;max-width:850px}
+.hero h1 .accent{background:linear-gradient(95deg,#fff 0%,#d8faff 27%,#55eaff 55%,#7c86ff 82%,#fff);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+.hero-lead{font-size:18px;line-height:1.9;color:#a9bfd1;max-width:780px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.hero-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:27px;max-width:690px}
+.hero-mini article{padding:15px;border-radius:16px;background:linear-gradient(180deg,rgba(10,34,57,.64),rgba(4,16,29,.72));border:1px solid rgba(255,255,255,.055);transition:.25s}
+.hero-mini article:hover{transform:translateY(-4px);border-color:rgba(80,231,255,.16)}
+.hero-mini b{display:block;font-size:14px}.hero-mini span{display:block;margin-top:5px;color:var(--muted2);font-size:10px}
+
+/* isolated car visual */
+.hero-visual{grid-area:visual;min-height:650px;display:grid;place-items:center;position:relative;perspective:1100px}
+.tech-stage{position:relative;width:min(680px,100%);aspect-ratio:1/1;display:grid;place-items:center;transform-style:preserve-3d}
+.hero-aura{position:absolute;width:78%;height:24%;bottom:13%;border-radius:50%;background:radial-gradient(ellipse,rgba(80,231,255,.28),rgba(47,124,255,.08) 48%,transparent 72%);filter:blur(26px)}
+.orbit{position:absolute;border-radius:50%;pointer-events:none}.orbit.a{width:84%;height:84%;border:1px solid rgba(80,231,255,.23);animation:spin 18s linear infinite}.orbit.b{width:68%;height:68%;border:1px dashed rgba(119,104,255,.34);animation:spin 13s linear infinite reverse}.orbit.c{width:52%;height:52%;border:1px solid rgba(80,231,255,.13)}
+.scan-sector{position:absolute;width:80%;height:80%;border-radius:50%;background:conic-gradient(from 200deg,transparent 0 16%,rgba(80,231,255,.13) 23%,rgba(80,231,255,.02) 34%,transparent 43%);animation:spin 8s linear infinite}
+.car-img{position:relative;z-index:5;width:96%;height:auto;object-fit:contain;filter:drop-shadow(0 34px 42px rgba(0,0,0,.58)) drop-shadow(0 0 24px rgba(37,149,255,.13));transform:translate3d(0,0,45px);will-change:transform;transition:transform .16s ease-out}
+.tech-label{position:absolute;z-index:7;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:rgba(3,15,27,.72);border:1px solid rgba(80,231,255,.15);backdrop-filter:blur(10px);color:#e4faff;font-size:9px;font-weight:900;letter-spacing:.08em}
+.tech-label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan)}
+.tech-label.cam{left:1%;top:25%}.tech-label.obd{right:0;top:31%}.tech-label.gps{left:7%;bottom:20%}.tech-label.ai{right:7%;bottom:18%}
+.left-rail{position:absolute;left:-6px;top:31%;display:grid;gap:12px;z-index:7}
+.left-rail span{display:flex;align-items:center;gap:8px;font-size:9px;font-weight:850;color:#cce0ed}
+.left-rail i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-style:normal;border:1px solid rgba(80,231,255,.25);background:rgba(4,20,34,.62);color:var(--cyan);box-shadow:0 0 22px rgba(80,231,255,.07)}
+
+/* journey strip */
+.system-strip{margin-top:12px;padding:18px 22px;display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:18px;align-items:center}
+.system-intro h3{font-size:23px;margin-bottom:5px}.system-intro p{font-size:12px;color:var(--muted);margin:0}
+.system-step{display:flex;align-items:center;gap:12px;position:relative}.system-step:not(:last-child)::after{content:"→";position:absolute;inset-inline-end:-15px;color:var(--cyan);opacity:.7;font-size:20px}html[dir="rtl"] .system-step:not(:last-child)::after{content:"←"}
+.system-icon{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;flex:none;border:1px solid rgba(80,231,255,.28);background:radial-gradient(circle,rgba(80,231,255,.13),rgba(47,124,255,.03));color:var(--cyan);font-size:18px;box-shadow:0 0 24px rgba(80,231,255,.06)}
+.system-step small{font-size:9px;color:#7690a6}.system-step b{display:block;font-size:13px;margin-bottom:4px}
+
+/* capabilities */
+.capabilities{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:14px}
+.capability{padding:22px 18px;text-align:center;position:relative}.capability:not(:last-child)::after{content:"";position:absolute;top:20%;bottom:20%;inset-inline-end:0;width:1px;background:rgba(255,255,255,.07)}
+.cap-icon{font-size:26px;color:var(--cyan);margin-bottom:10px}.capability b{display:block;font-size:14px;margin-bottom:7px}.capability p{font-size:11px;color:var(--muted);line-height:1.6;margin:0}
+
+/* generic cards */
+.problem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{padding:24px;position:relative;overflow:hidden;transition:.28s}.card::before{content:"";position:absolute;width:160px;height:160px;border-radius:50%;top:-90px;right:-90px;background:radial-gradient(circle,rgba(80,231,255,.11),transparent 68%);opacity:0;transform:scale(.7);transition:.3s}
+.card:hover{transform:translateY(-6px) scale(1.01);border-color:rgba(80,231,255,.18);box-shadow:0 28px 85px rgba(0,0,0,.4)}.card:hover::before{opacity:1;transform:scale(1)}
+.card-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(80,231,255,.065);border:1px solid rgba(80,231,255,.13);color:var(--cyan);font-size:20px;margin-bottom:18px}
+.card h3{font-size:18px;margin-bottom:9px}.card p{font-size:13px;line-height:1.72;color:var(--muted);margin-bottom:0}
+
+/* story */
+.story-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;position:relative}.story-grid::before{content:"";position:absolute;left:14%;right:14%;top:78px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--blue),var(--violet),transparent);opacity:.35}
+.story-card{padding:24px;min-height:290px;position:relative}.story-index{font-size:10px;color:var(--cyan);letter-spacing:.15em;font-weight:900}
+.story-visual{height:110px;margin:17px 0 20px;border-radius:17px;position:relative;overflow:hidden;border:1px solid rgba(80,231,255,.085);background:linear-gradient(rgba(80,231,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(80,231,255,.03) 1px,transparent 1px),radial-gradient(circle at 50% 55%,rgba(80,231,255,.11),transparent 42%),rgba(1,12,22,.46);background-size:22px 22px,22px 22px,auto,auto}
+.story-car{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);width:120px;height:38px;border-radius:22px 30px 11px 11px;background:linear-gradient(180deg,#24405e,#0a1c2e);box-shadow:0 12px 28px rgba(0,0,0,.4)}
+.story-car::before{content:"";position:absolute;left:24px;right:24px;top:-18px;height:25px;background:#17314c;clip-path:polygon(16% 100%,28% 0,72% 0,86% 100%)}
+.pings span{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 13px var(--cyan)}.pings span:nth-child(1){left:13%;top:21%}.pings span:nth-child(2){left:13%;bottom:20%}.pings span:nth-child(3){right:13%;top:21%}.pings span:nth-child(4){right:13%;bottom:20%}
+.route-line{position:absolute;left:10%;right:10%;top:50%;height:2px;transform:rotate(-7deg);background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet))}.route-line::after{content:"";position:absolute;width:10px;height:10px;border-radius:50%;background:var(--amber);box-shadow:0 0 14px var(--amber);animation:travel 3.6s ease-in-out infinite alternate}
+.compare-mini::before,.compare-mini::after{content:"";position:absolute;top:12px;bottom:12px;width:calc(50% - 16px);border-radius:12px}.compare-mini::before{left:12px;background:linear-gradient(150deg,rgba(80,231,255,.13),rgba(47,124,255,.04))}.compare-mini::after{right:12px;background:linear-gradient(150deg,rgba(255,99,119,.08),rgba(119,104,255,.05))}.compare-mini i{position:absolute;z-index:2;left:50%;top:9px;bottom:9px;width:1px;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.story-card h3{font-size:24px;margin-bottom:9px}.story-card p{font-size:13px;line-height:1.72;color:var(--muted)}.chips{display:flex;gap:7px;flex-wrap:wrap}.chips span{padding:6px 8px;border-radius:999px;font-size:9px;color:#c1d4e1;background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.055)}
+
+/* video */
+.video-card{padding:18px}.video-shell{position:relative;aspect-ratio:16/9;border-radius:19px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.07)}.video-shell video{display:block;width:100%;height:100%;object-fit:cover}
+.video-badge{position:absolute;z-index:3;top:14px;left:14px;padding:8px 10px;border-radius:999px;background:rgba(2,14,24,.8);border:1px solid rgba(69,233,170,.2);color:#c3f8df;font-size:9px;font-weight:900;letter-spacing:.1em}
+.feature-row{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:12px}.feature-row div{padding:13px;border-radius:13px;text-align:center;color:#cbdbe7;font-size:11px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055)}
+
+/* internal image */
+.internal-layout{display:grid;grid-template-columns:1.3fr .7fr;gap:22px;align-items:start}
+.infographic-frame{padding:14px;position:relative;overflow:hidden}.infographic-frame::before{content:"";position:absolute;inset:-1px;border-radius:28px;padding:1px;background:linear-gradient(110deg,rgba(80,231,255,.4),transparent 30%,rgba(119,104,255,.3),transparent 70%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.infographic-frame img{display:block;width:100%;height:auto;border-radius:18px;cursor:zoom-in}
+.internal-side{display:grid;gap:14px}.insight{padding:21px}.insight small{font-size:9px;color:var(--cyan);letter-spacing:.12em}.insight h3{font-size:19px;margin:8px 0}.insight p{font-size:12px;color:var(--muted);line-height:1.7;margin:0}
+.vis-sees{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.vis-sees div{padding:12px;border-radius:13px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);font-size:10px;color:#c5d5e2}
+
+/* monitoring */
+.monitor-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:18px}
+.map{min-height:455px;position:relative;overflow:hidden;padding:20px;background:linear-gradient(rgba(80,231,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(80,231,255,.035) 1px,transparent 1px),radial-gradient(circle at 55% 45%,rgba(80,231,255,.08),transparent 30%),#051423;background-size:34px 34px,34px 34px,auto,auto}
+.map svg{position:absolute;inset:65px 35px 45px;width:calc(100% - 70px);height:calc(100% - 110px)}.map .back{stroke:rgba(80,231,255,.13);stroke-width:10;fill:none;stroke-linecap:round}.map .front{stroke:#58e9ff;stroke-width:2;fill:none;stroke-linecap:round;stroke-dasharray:8 12;animation:dash 4s linear infinite}
+.pin{position:absolute;width:16px;height:16px;border-radius:50%;border:3px solid var(--cyan);background:#06131f;box-shadow:0 0 20px var(--cyan)}.pin.start{left:11%;bottom:18%}.pin.end{right:13%;top:18%}.live-car{position:absolute;left:47%;top:46%;width:16px;height:16px;border-radius:50%;background:var(--amber);box-shadow:0 0 18px var(--amber);animation:drive 5s ease-in-out infinite alternate}
+.monitor-panel{padding:22px}.live-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.live-head span{font-size:9px;color:#aef5d7}.live-head span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);margin-inline-end:6px}
+.telemetry{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{position:relative;overflow:hidden;padding:15px;border-radius:15px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055)}.metric::after{content:"";position:absolute;left:-55%;top:0;width:34%;height:100%;background:linear-gradient(90deg,transparent,rgba(80,231,255,.08),transparent);transform:skewX(-18deg);animation:metricSweep 4.3s ease-in-out infinite}.metric strong{font-size:28px;position:relative;z-index:2}.metric small{display:block;margin-top:3px;color:var(--muted2);font-size:9px;position:relative;z-index:2}
+.event{margin-top:10px;padding:13px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055)}.event.warn{background:rgba(255,201,106,.04);border-color:rgba(255,201,106,.16)}.event.danger{background:rgba(255,99,119,.04);border-color:rgba(255,99,119,.16)}.event b{font-size:11px}.event p{font-size:10px;color:var(--muted);margin:5px 0 0}
+
+/* timeline */
+.timeline{position:relative;padding-inline-start:31px;display:grid;gap:12px}.timeline::before{content:"";position:absolute;inset-block:10px;inset-inline-start:7px;width:2px;background:linear-gradient(var(--cyan),var(--blue),var(--violet),var(--green))}
+.timeline article{position:relative;padding:17px 20px;border-radius:17px;background:rgba(255,255,255,.024);border:1px solid rgba(255,255,255,.055);transition:.28s}.timeline article::before{content:"";position:absolute;inset-inline-start:-30px;top:24px;width:11px;height:11px;border-radius:50%;background:var(--cyan);box-shadow:0 0 17px var(--cyan);transition:.28s}.timeline article.active{transform:translateX(5px);border-color:rgba(80,231,255,.15);box-shadow:0 16px 42px rgba(0,0,0,.24)}html[dir="rtl"] .timeline article.active{transform:translateX(-5px)}.timeline article.active::before{transform:scale(1.65);box-shadow:0 0 28px var(--cyan)}
+.timeline small{font-size:9px;color:var(--cyan);letter-spacing:.11em}.timeline h3{font-size:15px;margin:6px 0}.timeline p{font-size:11px;color:var(--muted);margin:0}
+
+/* ecosystem */
+.ecosystem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.eco{padding:23px;min-height:220px}.eco-num{font-size:10px;color:var(--cyan)}.eco h3{font-size:18px;margin:14px 0 9px}.eco p{font-size:12px;line-height:1.72;color:var(--muted)}.eco ul{padding-inline-start:18px;color:#c8d7e3;font-size:11px;line-height:1.8;margin-bottom:0}
+
+/* report */
+.report-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:18px}.report-score,.report-card{padding:24px}
+.score{width:185px;height:185px;margin:12px auto 18px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(var(--green) 0 var(--score,0%),rgba(255,255,255,.06) var(--score,0%) 100%);transition:--score 1.3s ease}.score::before{content:"";position:absolute;inset:12px;border-radius:50%;background:#061523}.score div{position:relative;text-align:center}.score strong{font-size:43px}.score span{display:block;font-size:9px;color:var(--muted2)}
+.report-note{font-size:10px;text-align:center;color:var(--muted2)}.report-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.report-head strong{font-size:18px}.report-head span{font-size:9px;color:var(--muted2)}
+.report-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.report-metric{padding:14px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055)}.report-metric small{font-size:8px;color:var(--muted2)}.report-metric b{display:block;margin-top:6px;font-size:13px}
+.report-summary{margin-top:10px;padding:15px;border-radius:15px;background:rgba(80,231,255,.04);border:1px solid rgba(80,231,255,.095)}.report-summary small{font-size:8px;color:var(--cyan)}.report-summary p{font-size:11px;line-height:1.7;color:#c2d2df;margin:6px 0 0}
+
+/* status/contact */
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.status-card{padding:26px}.status-head{display:flex;align-items:center;gap:10px}.status-dot{width:10px;height:10px;border-radius:50%}.working .status-dot{background:var(--green);box-shadow:0 0 14px var(--green)}.future .status-dot{background:#8d7cff;box-shadow:0 0 14px #8d7cff}.status-head small{font-size:9px;color:var(--muted2)}.status-head h3{font-size:24px;margin:4px 0 0}.status-card ul{list-style:none;padding:0;margin:18px 0 0}.status-card li{position:relative;padding:11px 0;border-top:1px solid rgba(255,255,255,.05);padding-inline-start:23px;font-size:12px;color:#c6d5e1}.status-card li::before{position:absolute;inset-inline-start:0;content:"✓";color:var(--green)}.future li::before{content:"→";color:#a090ff}
+.contact{padding:48px;border-radius:32px;display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center;background:radial-gradient(circle at 10% 0%,rgba(80,231,255,.1),transparent 34%),radial-gradient(circle at 100% 100%,rgba(119,104,255,.1),transparent 35%),#061422;border:1px solid rgba(80,231,255,.12)}.contact h2{font-size:clamp(36px,5vw,60px)}
+.contact-links{display:grid;gap:9px}.contact-links a{text-decoration:none;padding:15px 16px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);transition:.24s}.contact-links a:hover{transform:translateY(-3px);border-color:rgba(80,231,255,.16);box-shadow:0 15px 38px rgba(0,0,0,.24)}.contact-links small{font-size:8px;color:var(--muted2);display:block}.contact-links strong{font-size:12px;display:block;margin-top:4px}
+footer{padding:24px 0 34px;color:#5f788e;font-size:9px}footer .max{display:flex;justify-content:space-between;gap:18px;border-top:1px solid rgba(255,255,255,.05);padding-top:20px}
+
+/* lightbox */
+.lightbox{position:fixed;inset:0;z-index:300;display:none;place-items:center;padding:26px;background:rgba(1,6,12,.9);backdrop-filter:blur(18px)}.lightbox.open{display:grid}.lightbox-box{position:relative;max-width:1480px;width:100%}.lightbox img{display:block;width:100%;max-height:88vh;object-fit:contain;border-radius:18px;border:1px solid rgba(80,231,255,.14);box-shadow:0 38px 130px rgba(0,0,0,.62)}.lightbox button{position:absolute;right:0;top:-48px;width:38px;height:38px;border-radius:50%;background:#071725;border:1px solid rgba(255,255,255,.1);color:#fff;cursor:pointer}
+
+/* responsive */
+@media(max-width:1120px){
+  .navlinks{display:none}.menu-btn{display:block}
+  .hero-grid{grid-template-columns:1fr;grid-template-areas:"content" "visual";gap:45px}.hero-content{text-align:center!important;direction:inherit}.hero-lead,.hero-mini{margin-inline:auto}.hero-actions{justify-content:center}.hero-visual{min-height:590px}
+  .system-strip{grid-template-columns:1fr 1fr}.system-intro{grid-column:1/-1}.capabilities{grid-template-columns:repeat(3,1fr)}.capability:nth-child(3)::after{display:none}
+  .problem-grid,.ecosystem-grid{grid-template-columns:repeat(2,1fr)}.internal-layout{grid-template-columns:1fr}.internal-side{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:820px){
+  .max{width:min(calc(100% - 24px),var(--max))}.section{padding:88px 0}.navbar{height:64px}.brand-vis{font-size:29px}.brand-copy strong{font-size:8px}.hero{padding-top:104px}
+  .hero h1{font-size:clamp(46px,12vw,72px)}.hero-lead{font-size:15px}.hero-visual{min-height:470px}
+  .system-strip,.story-grid,.monitor-grid,.report-grid,.status-grid,.contact{grid-template-columns:1fr}.system-intro{grid-column:auto}.story-grid::before{display:none}
+  .feature-row{grid-template-columns:repeat(2,1fr)}.feature-row div:last-child{grid-column:1/-1}.capabilities{grid-template-columns:repeat(2,1fr)}.capability::after{display:none}.internal-side{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+  .brand-divider,.brand-copy{display:none}.brand-vis{font-size:31px}.lang-btn{padding:8px 9px}
+  .hero h1{font-size:43px}.hero-mini{grid-template-columns:1fr}.hero-visual{min-height:365px}.tech-label{font-size:7px;padding:6px 8px}.left-rail{display:none}
+  .problem-grid,.ecosystem-grid{grid-template-columns:1fr}.feature-row,.capabilities{grid-template-columns:1fr}.feature-row div:last-child{grid-column:auto}.contact{padding:28px 18px}.section-lead{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@property --score{syntax:"<percentage>";inherits:false;initial-value:0%}
+@keyframes load{to{width:100%}}@keyframes shine{to{background-position:-220% 0}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{opacity:.35;transform:scale(.72)}}@keyframes travel{from{left:8%}to{left:82%}}@keyframes dash{to{stroke-dashoffset:-58}}@keyframes drive{from{transform:translate(-70px,55px)}to{transform:translate(95px,-60px)}}@keyframes metricSweep{0%,58%{transform:translateX(0) skewX(-18deg);opacity:0}70%{opacity:1}100%{transform:translateX(480%) skewX(-18deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="loader" id="loader"><div class="loader-box"><div class="loader-logo">VIS</div><div class="loader-sub">Vehicle Intelligence System</div><div class="loader-line"><i></i></div></div></div>
+<canvas id="network"></canvas>
+<div class="cursor-dot" id="cursorDot"></div><div class="cursor-ring" id="cursorRing"></div>
+<div class="scroll-progress"><span id="progress"></span></div>
+
+<header class="navbar">
+  <a class="brand" href="#home"><span class="brand-vis">VIS</span><span class="brand-divider"></span><span class="brand-copy"><strong>VEHICLE INTELLIGENCE</strong><small>SYSTEM</small></span></a>
+  <nav class="navlinks"><a href="#about" data-t="nav_about">عن المشروع</a><a href="#external" data-t="nav_external">الفحص الخارجي</a><a href="#internal" data-t="nav_internal">الفحص الداخلي</a><a href="#monitor" data-t="nav_monitor">المراقبة</a><a href="#platform" data-t="nav_platform">المنصة</a><a href="#contact" data-t="nav_contact">تواصل معنا</a></nav>
+  <div class="nav-actions"><button class="lang-btn" id="langBtn">EN</button><button class="menu-btn" id="menuBtn">☰</button></div>
+</header>
+<div class="mobile-menu" id="mobileMenu"></div>
+
+<main>
+<section class="hero" id="home">
+  <div class="max">
+    <div class="hero-grid">
+      <div class="hero-visual reveal">
+        <div class="tech-stage" id="techStage">
+          <div class="hero-aura"></div><div class="orbit a"></div><div class="orbit b"></div><div class="orbit c"></div><div class="scan-sector"></div>
+          <img class="car-img" id="heroCar" loading="eager" width="1536" height="1024" src="assets/images/hero-car.png" alt="VIS vehicle">
+          <div class="tech-label cam">VISUAL</div><div class="tech-label obd">OBD / CAN</div><div class="tech-label gps">GPS</div><div class="tech-label ai">AI</div>
+          <div class="left-rail"><span><i>◉</i>CAMERAS</span><span><i>⌁</i>SENSORS</span><span><i>AI</i>AI ANALYSIS</span></div>
+        </div>
+      </div>
+
+      <div class="hero-content reveal">
+        <div class="status-pill"><i></i><span data-t="status">نموذج عامل للفحص الخارجي + رؤية منصة متصلة قيد التطوير</span></div>
+        <div class="hero-kicker">VIS · VEHICLE INTELLIGENCE SYSTEM</div>
+        <h1 data-t-html="hero_title">ذكاء المركبات <span class="accent">لحالة أكثر وضوحًا وأمانًا.</span></h1>
+        <p class="hero-lead" data-t="hero_lead">VIS منصة رقمية تربط الفحص الخارجي، البيانات الداخلية المدعومة، والمراقبة أثناء الاستخدام في سجل واحد يوضح حالة المركبة قبل التأجير وأثناءه وبعد الإرجاع.</p>
+        <div class="hero-actions"><a class="btn primary" href="#about"><span data-t="explore">استكشف المنصة</span> ←</a><a class="btn secondary" href="#external"><span data-t="watch">شاهد النموذج العامل</span> ▶</a></div>
+        <div class="hero-mini stagger"><article class="reveal"><b data-t="safe_title">أوضح في النزاعات</b><span data-t="safe_body">دليل حالة قبل وبعد التأجير</span></article><article class="reveal"><b data-t="decision_title">قرارات أدق</b><span data-t="decision_body">صور + بيانات + سياق زمني</span></article><article class="reveal"><b data-t="time_title">سجل واحد</b><span data-t="time_body">من التسليم حتى الإرجاع</span></article></div>
+      </div>
+    </div>
+
+    <div class="glass system-strip reveal">
+      <div class="system-intro"><h3 data-t="journey_title">رحلة حالة متكاملة</h3><p data-t="journey_sub">VIS لا تتعامل مع الفحص كلقطة منفصلة، بل كقصة حالة زمنية للمركبة.</p></div>
+      <div class="system-step"><div class="system-icon">01</div><div><b data-t="before">قبل التأجير</b><small data-t="before_s">تسجيل الحالة الأساسية</small></div></div>
+      <div class="system-step"><div class="system-icon">02</div><div><b data-t="during">أثناء الاستخدام</b><small data-t="during_s">أحداث ومراقبة مدعومة</small></div></div>
+      <div class="system-step"><div class="system-icon">03</div><div><b data-t="after">بعد الإرجاع</b><small data-t="after_s">إعادة الفحص والمقارنة</small></div></div>
+    </div>
+
+    <div class="capabilities reveal">
+      <div class="capability"><div class="cap-icon">⌕</div><b data-t="cap1_t">الفحص الخارجي</b><p data-t="cap1_b">كشف الأضرار ومقارنتها بصريًا باستخدام الذكاء الاصطناعي.</p></div>
+      <div class="capability"><div class="cap-icon">⚙</div><b data-t="cap2_t">الفحص الداخلي</b><p data-t="cap2_b">قراءة البيانات التشخيصية والتشغيلية المدعومة عبر OBD-II / CAN.</p></div>
+      <div class="capability"><div class="cap-icon">▥</div><b data-t="cap3_t">المراقبة أثناء التأجير</b><p data-t="cap3_b">GPS وأحداث الرحلة وسلوك القيادة والبيانات الفنية المتاحة.</p></div>
+      <div class="capability"><div class="cap-icon">▤</div><b data-t="cap4_t">التقرير النهائي</b><p data-t="cap4_b">تجميع الأدلة والتغيّرات في سجل حالة قابل للمراجعة.</p></div>
+      <div class="capability"><div class="cap-icon">◇</div><b data-t="cap5_t">الثقة والحماية</b><p data-t="cap5_b">دعم أوضح للتأجير والنزاعات والمطالبات التأمينية.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="max">
+    <div class="section-head reveal"><p class="eyebrow" data-t="problem_k">المشكلة التي تحلها VIS</p><h2 data-t="problem_h">معرفة حالة المركبة لا يجب أن تبدأ عند الإرجاع.</h2><p class="section-lead" data-t="problem_p">في التأجير التقليدي يمكن أن تضيع الحقيقة بين صور متفرقة، أعطال لا يعرف وقت ظهورها، وأحداث استخدام لا ترتبط بالتقرير النهائي. VIS تجمع هذه الأدلة في سياق واحد.</p></div>
+    <div class="problem-grid stagger"><article class="glass card reveal"><div class="card-icon">◎</div><h3 data-t="pr1_t">ضرر سابق غير موثق</h3><p data-t="pr1_b">قد تمر خدوش أو انبعاجات صغيرة دون توثيق دقيق قبل التسليم.</p></article><article class="glass card reveal"><div class="card-icon">↔</div><h3 data-t="pr2_t">نزاع بعد الإرجاع</h3><p data-t="pr2_b">من دون خط أساس واضح يصبح إثبات أن الضرر جديد أو قديم أصعب.</p></article><article class="glass card reveal"><div class="card-icon">⌁</div><h3 data-t="pr3_t">فترة استخدام غير مرئية</h3><p data-t="pr3_b">الصورة وحدها لا تشرح الأحداث التشخيصية أو التشغيلية التي ظهرت أثناء التأجير.</p></article><article class="glass card reveal"><div class="card-icon">▦</div><h3 data-t="pr4_t">أدلة منفصلة</h3><p data-t="pr4_b">الفحص وGPS والعقود والمطالبات غالبًا تعيش في أنظمة منفصلة بدل سجل موحد.</p></article></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="max">
+    <div class="section-head reveal"><p class="eyebrow">BEFORE · DURING · AFTER</p><h2 data-t="story_h">VIS تبني سجل حالة، لا مجرد نتيجة فحص.</h2><p class="section-lead" data-t="story_p">كل مرحلة تضيف طبقة جديدة من الأدلة، ثم ترتبط هذه الطبقات معًا في Vehicle Condition Timeline واحد.</p></div>
+    <div class="story-grid stagger">
+      <article class="glass story-card reveal"><div class="story-index">01 · BEFORE</div><div class="story-visual"><div class="pings"><span></span><span></span><span></span><span></span></div><div class="story-car"></div></div><h3 data-t="before">قبل التأجير</h3><p data-t="story1_b">تصوير المركبة من ثماني زوايا، التعرف على المركبة واللوحة، تحديد الأجزاء والأضرار القائمة، مع لقطة تشخيصية داخلية مدعومة.</p><div class="chips"><span>8 Views</span><span>AI Inspection</span><span>Baseline</span></div></article>
+      <article class="glass story-card reveal"><div class="story-index">02 · DURING</div><div class="story-visual"><div class="route-line"></div><div class="story-car" style="transform:translate(-50%,-50%) scale(.78)"></div></div><h3 data-t="during">أثناء الاستخدام</h3><p data-t="story2_b">تسجيل الموقع وأحداث الرحلة ومؤشرات القيادة والبيانات التشخيصية المتاحة وربطها بزمن الرحلة.</p><div class="chips"><span>GPS</span><span>Trip Events</span><span>Diagnostics</span></div></article>
+      <article class="glass story-card reveal"><div class="story-index">03 · AFTER</div><div class="story-visual compare-mini"><i></i><div class="story-car" style="z-index:2;transform:translate(-50%,-50%) scale(.72)"></div></div><h3 data-t="after">بعد الإرجاع</h3><p data-t="story3_b">إعادة الفحص الخارجي والداخلي، ثم المقارنة مع الحالة المرجعية لتحديد ما تغير وربطه بالفترة التي ظهر خلالها.</p><div class="chips"><span>Comparison</span><span>Change Detection</span><span>Final Record</span></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="external">
+  <div class="max">
+    <div class="section-head reveal"><p class="eyebrow" data-t="external_k">النموذج العامل الآن · الفحص الخارجي</p><h2 data-t="external_h">هنا تتحول الفكرة إلى دليل يعمل فعليًا.</h2><p class="section-lead" data-t="external_p">النموذج الحالي يفحص صور المركبة الخارجية، يكشف الأضرار، ويقارن حالة المركبة قبل التأجير وبعد الإرجاع لاستخراج دليل الضرر الجديد.</p></div>
+    <div class="glass video-card reveal"><div class="video-shell"><div class="video-badge">WORKING PROTOTYPE</div><video controls playsinline preload="metadata" poster="assets/images/external-demo-poster.jpg"><source src="assets/videos/vis-external-demo.mp4" type="video/mp4"></video></div><div class="feature-row"><div data-t="ef1">ثماني زوايا محددة</div><div data-t="ef2">كشف الضرر بالذكاء الاصطناعي</div><div data-t="ef3">ربط الضرر بالجزء</div><div data-t="ef4">مقارنة قبل / بعد</div><div data-t="ef5">اكتشاف الضرر الجديد</div></div></div>
+  </div>
+</section>
+
+<section class="section" id="internal">
+  <div class="max">
+    <div class="section-head reveal"><p class="eyebrow" data-t="internal_k">الفحص الداخلي الإلكتروني · رؤية المنصة</p><h2 data-t="internal_h">ما لا تراه الكاميرا، يمكن أن توضحه بيانات المركبة المدعومة.</h2><p class="section-lead" data-t="internal_p">تجمع VIS البيانات التي تتيحها المركبة عبر OBD-II / CAN وGPS، ثم تنظّمها زمنيًا وتستخدمها لبناء فهم أعمق للحالة الداخلية، الأعطال، والأنماط التشغيلية.</p></div>
+    <div class="internal-layout">
+      <div class="glass infographic-frame reveal"><img id="internalImage" loading="lazy" width="1672" height="941" src="assets/images/internal-inspection.png" alt="VIS internal vehicle inspection workflow"></div>
+      <div class="internal-side stagger">
+        <article class="glass insight reveal"><small data-t="in1_k">ما يراه السائق</small><h3 data-t="in1_t">تحذير عام أو عرض ظاهر.</h3><p data-t="in1_b">قد يرى السائق Check Engine أو حرارة أو بطارية أو رسالة عامة، لكنه لا يرى دائمًا التفاصيل التشخيصية أو تاريخ ظهورها.</p></article>
+        <article class="glass insight reveal"><small data-t="in2_k">ما تضيفه VIS</small><h3 data-t="in2_t">السياق خلف التحذير.</h3><p data-t="in2_b">أكواد DTC، قراءات مدعومة، اتجاهات زمنية، سياق الرحلة والموقع، وربط الحدث بفترة التأجير.</p><div class="vis-sees"><div>DTC / Pending Faults</div><div>Battery / Temperature</div><div>GPS / Trip Events</div><div>Time-linked History</div></div></article>
+        <article class="glass insight reveal"><small data-t="in3_k">مبدأ أمني</small><h3 data-t="in3_t">قراءة أولًا، لا تحكم بالمركبة.</h3><p data-t="in3_b">مفهوم الجهاز الأولي Read-Only: يجمع البيانات المدعومة ولا يرسل أوامر تحكم للأنظمة الحرجة.</p></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="monitor">
+  <div class="max">
+    <div class="section-head reveal"><p class="eyebrow" data-t="monitor_k">أثناء الاستخدام</p><h2 data-t="monitor_h">فترة التأجير تصبح سلسلة أحداث مفهومة، لا فجوة مجهولة.</h2><p class="section-lead" data-t="monitor_p">كل حدث تشغيلي أو تشخيصي مدعوم يُسجل مع وقته وسياقه، بحيث يمكن الرجوع إليه عند مقارنة حالة المركبة قبل الإيجار وبعده.</p></div>
+    <div class="monitor-grid"><div class="glass map reveal"><small style="font-size:9px;color:#6e879b">TRIP CONTEXT · PLATFORM VISION</small><svg viewBox="0 0 650 340"><path class="back" d="M50 275C170 230 185 120 305 172C380 204 455 80 600 58"/><path class="front" d="M50 275C170 230 185 120 305 172C380 204 455 80 600 58"/></svg><span class="pin start"></span><span class="pin end"></span><span class="live-car"></span></div><div class="glass monitor-panel reveal"><div class="live-head"><strong data-t="live_t">سياق المركبة أثناء التأجير</strong><span>LIVE CONCEPT</span></div><div class="telemetry"><div class="metric"><strong>72</strong><small data-t="m1">km/h السرعة</small></div><div class="metric"><strong>2450</strong><small>RPM</small></div><div class="metric"><strong>13.9V</strong><small data-t="m2">البطارية</small></div><div class="metric"><strong>91°C</strong><small data-t="m3">حرارة التبريد</small></div></div><div class="event warn"><b data-t="ev1_t">11:46 · حدث قيادة</b><p data-t="ev1_b">كبح قوي تم تسجيله مع وقت الرحلة وسياق الموقع.</p></div><div class="event danger"><b data-t="ev2_t">13:20 · حدث تشخيصي</b><p data-t="ev2_b">ظهر نمط غير طبيعي خلال فترة الاستخدام وتمت إضافته للمراجعة.</p></div></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="max">
+    <div class="section-head reveal"><p class="eyebrow">VEHICLE CONDITION TIMELINE</p><h2 data-t="timeline_h">القيمة ليست في تنبيه واحد، بل في التاريخ الذي يحيط به.</h2><p class="section-lead" data-t="timeline_p">VIS تربط الفحوصات والأحداث المهمة بترتيبها الزمني لتوضيح ما كان موجودًا، وما ظهر أثناء الاستخدام، وما تغير عند الإرجاع.</p></div>
+    <div class="timeline stagger" id="timeline"><article class="reveal"><small data-t="tl1_k">قبل التأجير</small><h3 data-t="tl1_t">تسجيل الحالة المرجعية</h3><p data-t="tl1_b">الفحص الخارجي واللقطة التشخيصية المدعومة.</p></article><article class="reveal"><small data-t="tl2_k">التسليم</small><h3 data-t="tl2_t">بدء فترة التأجير</h3><p data-t="tl2_b">الحالة المرجعية تصبح نقطة المقارنة لهذه الرحلة.</p></article><article class="reveal"><small data-t="tl3_k">أثناء الاستخدام</small><h3 data-t="tl3_t">أحداث الرحلة</h3><p data-t="tl3_b">تسجيل أحداث مدعومة وربطها بالوقت والسياق.</p></article><article class="reveal"><small data-t="tl4_k">الإرجاع</small><h3 data-t="tl4_t">إعادة الفحص والمقارنة</h3><p data-t="tl4_b">تحديد دليل التغير وربطه بالفترة التي ظهر خلالها.</p></article></div>
+  </div>
+</section>
+
+<section class="section" id="platform">
+  <div class="max">
+    <div class="section-head reveal"><p class="eyebrow" data-t="platform_k">أبعد من الفحص</p><h2 data-t="platform_h">VIS منصة لإدارة رحلة التأجير وحالة المركبة، وليست وحدة كشف أضرار فقط.</h2><p class="section-lead" data-t="platform_p">النواة نفسها تخدم شركات التأجير، أصحاب السيارات، المستأجرين وشركات التأمين، مع فصل واضح بين عمليات كل طرف.</p></div>
+    <div class="ecosystem-grid stagger"><article class="glass eco card reveal"><div class="eco-num">01</div><h3 data-t="eco1_t">شركات ومحلات التأجير</h3><p data-t="eco1_b">إدارة المركبات والحجوزات والفحوصات والعقود والمطالبات.</p><ul><li>Fleet & Bookings</li><li>Inspections</li><li>Contracts & Claims</li><li>API Integration</li></ul></article><article class="glass eco card reveal"><div class="eco-num">02</div><h3 data-t="eco2_t">أصحاب السيارات الخاصة</h3><p data-t="eco2_b">عرض المركبة للتأجير بعد التحقق واستيفاء المتطلبات القانونية والتأمينية والفنية.</p><ul><li>Owner Verification</li><li>Vehicle Listing</li><li>Condition Record</li><li>Rental Availability</li></ul></article><article class="glass eco card reveal"><div class="eco-num">03</div><h3 data-t="eco3_t">المستأجر</h3><p data-t="eco3_b">البحث والمقارنة والحجز والعقد والدفع مع حالة مرجعية أوضح للمركبة.</p><ul><li>Search & Compare</li><li>Booking</li><li>Protection Terms</li><li>Clear Handover</li></ul></article><article class="glass eco card reveal"><div class="eco-num">04</div><h3 data-t="eco4_t">شركات التأمين</h3><p data-t="eco4_b">الوصول إلى أدلة الفحص وسجل الاستخدام والسياق اللازم لمراجعة المطالبات.</p><ul><li>Evidence</li><li>Pre-inspection</li><li>Claims Context</li><li>Future Risk Models</li></ul></article></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="max">
+    <div class="section-head reveal"><p class="eyebrow" data-t="report_k">التقرير النهائي</p><h2 data-t="report_h">كل الأدلة تنتهي في سجل حالة واضح وقابل للمراجعة.</h2><p class="section-lead" data-t="report_p">التقرير النهائي يجمع الفحص الخارجي، الحالة الداخلية المدعومة، أحداث الاستخدام والتغيّرات المكتشفة دون تحويل الذكاء الاصطناعي وحده إلى حكم قانوني أو مالي.</p></div>
+    <div class="report-grid"><div class="glass report-score reveal"><small style="font-size:9px;color:#6e879a">CONDITION SCORE · CONCEPT</small><div class="score" id="score"><div><strong id="scoreNum">0</strong><span>/100</span></div></div><p class="report-note" data-t="score_note">الدرجة مثال بصري للمفهوم وليست مقياسًا إنتاجيًا معتمدًا بعد.</p></div><div class="glass report-card reveal"><div class="report-head"><div><strong>VIS Condition Report</strong><span>#VIS-1028</span></div><span data-t="review">REVIEW REQUIRED</span></div><div class="report-metrics"><div class="report-metric"><small data-t="r1_k">الفحص الخارجي</small><b data-t="r1_v">دليل ضرر جديد</b></div><div class="report-metric"><small data-t="r2_k">الحالة الداخلية</small><b data-t="r2_v">حدث للمراجعة</b></div><div class="report-metric"><small data-t="r3_k">أحداث الرحلة</small><b data-t="r3_v">أحداث مسجلة</b></div><div class="report-metric"><small data-t="r4_k">قبل / بعد</small><b data-t="r4_v">المقارنة مكتملة</b></div></div><div class="report-summary"><small data-t="summary_k">الملخص</small><p data-t="summary_p">ظهر دليل بصري جديد بعد الإرجاع وتم تسجيل حدث تشخيصي أثناء الاستخدام. القرار النهائي يبقى خاضعًا للمراجعة التشغيلية والبشرية.</p></div></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="max status-grid"><article class="glass status-card working reveal"><div class="status-head"><span class="status-dot"></span><div><small data-t="now_k">يعمل الآن</small><h3 data-t="now_h">النموذج العامل</h3></div></div><ul><li data-t="now1">الفحص الخارجي</li><li data-t="now2">كشف الأضرار الخارجية</li><li data-t="now3">المقارنة قبل / بعد</li><li data-t="now4">اكتشاف الضرر الجديد</li></ul></article><article class="glass status-card future reveal"><div class="status-head"><span class="status-dot"></span><div><small data-t="future_k">قيد التطوير / رؤية المنصة</small><h3 data-t="future_h">ذكاء المركبة المتصلة</h3></div></div><ul><li data-t="future1">تكامل OBD-II / CAN / GPS</li><li data-t="future2">تحليل AI للحالة الداخلية</li><li data-t="future3">المراقبة أثناء الاستخدام</li><li data-t="future4">Vehicle Condition Timeline الكامل</li><li data-t="future5">التأمين والمطالبات والتكامل التجاري</li></ul></article></div>
+</section>
+
+<section class="section" id="contact">
+  <div class="max contact reveal"><div><p class="eyebrow">VIS · VEHICLE INTELLIGENCE SYSTEM</p><h2 data-t="contact_h">فحص خارجي. ذكاء داخلي. سياق زمني واحد.</h2><p class="section-lead" data-t="contact_p">الهدف هو بناء سجل موثق ومترابط لحالة المركبة عبر رحلة التأجير كاملة.</p><div class="hero-actions"><a class="btn primary" href="#external" data-t="watch">شاهد النموذج العامل</a><a class="btn secondary" href="mailto:muhammad.al.zaghloul@gmail.com" data-t="contact_btn">تواصل معنا</a></div></div><div class="contact-links"><a href="tel:+963988708275"><small data-t="phone">الهاتف</small><strong dir="ltr">0988708275</strong></a><a href="mailto:muhammad.al.zaghloul@gmail.com"><small data-t="email">البريد الإلكتروني</small><strong dir="ltr">muhammad.al.zaghloul@gmail.com</strong></a></div></div>
+</section>
+</main>
+
+<footer><div class="max"><span>VIS © 2026</span><span>Vehicle Intelligence System · Exhibition Showcase</span></div></footer>
+<div class="lightbox" id="lightbox"><div class="lightbox-box"><button id="lightboxClose">×</button><img id="lightboxImg" alt="VIS internal inspection"></div></div>
+
+<script>
+const T={
+ar:{
+nav_about:"عن المشروع",nav_external:"الفحص الخارجي",nav_internal:"الفحص الداخلي",nav_monitor:"المراقبة",nav_platform:"المنصة",nav_contact:"تواصل معنا",
+status:"نموذج عامل للفحص الخارجي + رؤية منصة متصلة قيد التطوير",
+hero_title:'ذكاء المركبات <span class="accent">لحالة أكثر وضوحًا وأمانًا.</span>',
+hero_lead:"VIS منصة رقمية تربط الفحص الخارجي، البيانات الداخلية المدعومة، والمراقبة أثناء الاستخدام في سجل واحد يوضح حالة المركبة قبل التأجير وأثناءه وبعد الإرجاع.",
+explore:"استكشف المنصة",watch:"شاهد النموذج العامل",
+safe_title:"أوضح في النزاعات",safe_body:"دليل حالة قبل وبعد التأجير",decision_title:"قرارات أدق",decision_body:"صور + بيانات + سياق زمني",time_title:"سجل واحد",time_body:"من التسليم حتى الإرجاع",
+journey_title:"رحلة حالة متكاملة",journey_sub:"VIS لا تتعامل مع الفحص كلقطة منفصلة، بل كقصة حالة زمنية للمركبة.",
+before:"قبل التأجير",before_s:"تسجيل الحالة الأساسية",during:"أثناء الاستخدام",during_s:"أحداث ومراقبة مدعومة",after:"بعد الإرجاع",after_s:"إعادة الفحص والمقارنة",
+cap1_t:"الفحص الخارجي",cap1_b:"كشف الأضرار ومقارنتها بصريًا باستخدام الذكاء الاصطناعي.",cap2_t:"الفحص الداخلي",cap2_b:"قراءة البيانات التشخيصية والتشغيلية المدعومة عبر OBD-II / CAN.",cap3_t:"المراقبة أثناء التأجير",cap3_b:"GPS وأحداث الرحلة وسلوك القيادة والبيانات الفنية المتاحة.",cap4_t:"التقرير النهائي",cap4_b:"تجميع الأدلة والتغيّرات في سجل حالة قابل للمراجعة.",cap5_t:"الثقة والحماية",cap5_b:"دعم أوضح للتأجير والنزاعات والمطالبات التأمينية.",
+problem_k:"المشكلة التي تحلها VIS",problem_h:"معرفة حالة المركبة لا يجب أن تبدأ عند الإرجاع.",problem_p:"في التأجير التقليدي يمكن أن تضيع الحقيقة بين صور متفرقة، أعطال لا يعرف وقت ظهورها، وأحداث استخدام لا ترتبط بالتقرير النهائي. VIS تجمع هذه الأدلة في سياق واحد.",
+pr1_t:"ضرر سابق غير موثق",pr1_b:"قد تمر خدوش أو انبعاجات صغيرة دون توثيق دقيق قبل التسليم.",pr2_t:"نزاع بعد الإرجاع",pr2_b:"من دون خط أساس واضح يصبح إثبات أن الضرر جديد أو قديم أصعب.",pr3_t:"فترة استخدام غير مرئية",pr3_b:"الصورة وحدها لا تشرح الأحداث التشخيصية أو التشغيلية التي ظهرت أثناء التأجير.",pr4_t:"أدلة منفصلة",pr4_b:"الفحص وGPS والعقود والمطالبات غالبًا تعيش في أنظمة منفصلة بدل سجل موحد.",
+story_h:"VIS تبني سجل حالة، لا مجرد نتيجة فحص.",story_p:"كل مرحلة تضيف طبقة جديدة من الأدلة، ثم ترتبط هذه الطبقات معًا في Vehicle Condition Timeline واحد.",
+story1_b:"تصوير المركبة من ثماني زوايا، التعرف على المركبة واللوحة، تحديد الأجزاء والأضرار القائمة، مع لقطة تشخيصية داخلية مدعومة.",story2_b:"تسجيل الموقع وأحداث الرحلة ومؤشرات القيادة والبيانات التشخيصية المتاحة وربطها بزمن الرحلة.",story3_b:"إعادة الفحص الخارجي والداخلي، ثم المقارنة مع الحالة المرجعية لتحديد ما تغير وربطه بالفترة التي ظهر خلالها.",
+external_k:"النموذج العامل الآن · الفحص الخارجي",external_h:"هنا تتحول الفكرة إلى دليل يعمل فعليًا.",external_p:"النموذج الحالي يفحص صور المركبة الخارجية، يكشف الأضرار، ويقارن حالة المركبة قبل التأجير وبعد الإرجاع لاستخراج دليل الضرر الجديد.",
+ef1:"ثماني زوايا محددة",ef2:"كشف الضرر بالذكاء الاصطناعي",ef3:"ربط الضرر بالجزء",ef4:"مقارنة قبل / بعد",ef5:"اكتشاف الضرر الجديد",
+internal_k:"الفحص الداخلي الإلكتروني · رؤية المنصة",internal_h:"ما لا تراه الكاميرا، يمكن أن توضحه بيانات المركبة المدعومة.",internal_p:"تجمع VIS البيانات التي تتيحها المركبة عبر OBD-II / CAN وGPS، ثم تنظّمها زمنيًا وتستخدمها لبناء فهم أعمق للحالة الداخلية، الأعطال، والأنماط التشغيلية.",
+in1_k:"ما يراه السائق",in1_t:"تحذير عام أو عرض ظاهر.",in1_b:"قد يرى السائق Check Engine أو حرارة أو بطارية أو رسالة عامة، لكنه لا يرى دائمًا التفاصيل التشخيصية أو تاريخ ظهورها.",
+in2_k:"ما تضيفه VIS",in2_t:"السياق خلف التحذير.",in2_b:"أكواد DTC، قراءات مدعومة، اتجاهات زمنية، سياق الرحلة والموقع، وربط الحدث بفترة التأجير.",
+in3_k:"مبدأ أمني",in3_t:"قراءة أولًا، لا تحكم بالمركبة.",in3_b:"مفهوم الجهاز الأولي Read-Only: يجمع البيانات المدعومة ولا يرسل أوامر تحكم للأنظمة الحرجة.",
+monitor_k:"أثناء الاستخدام",monitor_h:"فترة التأجير تصبح سلسلة أحداث مفهومة، لا فجوة مجهولة.",monitor_p:"كل حدث تشغيلي أو تشخيصي مدعوم يُسجل مع وقته وسياقه، بحيث يمكن الرجوع إليه عند مقارنة حالة المركبة قبل الإيجار وبعده.",
+live_t:"سياق المركبة أثناء التأجير",m1:"km/h السرعة",m2:"البطارية",m3:"حرارة التبريد",ev1_t:"11:46 · حدث قيادة",ev1_b:"كبح قوي تم تسجيله مع وقت الرحلة وسياق الموقع.",ev2_t:"13:20 · حدث تشخيصي",ev2_b:"ظهر نمط غير طبيعي خلال فترة الاستخدام وتمت إضافته للمراجعة.",
+timeline_h:"القيمة ليست في تنبيه واحد، بل في التاريخ الذي يحيط به.",timeline_p:"VIS تربط الفحوصات والأحداث المهمة بترتيبها الزمني لتوضيح ما كان موجودًا، وما ظهر أثناء الاستخدام، وما تغير عند الإرجاع.",
+tl1_k:"قبل التأجير",tl1_t:"تسجيل الحالة المرجعية",tl1_b:"الفحص الخارجي واللقطة التشخيصية المدعومة.",tl2_k:"التسليم",tl2_t:"بدء فترة التأجير",tl2_b:"الحالة المرجعية تصبح نقطة المقارنة لهذه الرحلة.",tl3_k:"أثناء الاستخدام",tl3_t:"أحداث الرحلة",tl3_b:"تسجيل أحداث مدعومة وربطها بالوقت والسياق.",tl4_k:"الإرجاع",tl4_t:"إعادة الفحص والمقارنة",tl4_b:"تحديد دليل التغير وربطه بالفترة التي ظهر خلالها.",
+platform_k:"أبعد من الفحص",platform_h:"VIS منصة لإدارة رحلة التأجير وحالة المركبة، وليست وحدة كشف أضرار فقط.",platform_p:"النواة نفسها تخدم شركات التأجير، أصحاب السيارات، المستأجرين وشركات التأمين، مع فصل واضح بين عمليات كل طرف.",
+eco1_t:"شركات ومحلات التأجير",eco1_b:"إدارة المركبات والحجوزات والفحوصات والعقود والمطالبات.",eco2_t:"أصحاب السيارات الخاصة",eco2_b:"عرض المركبة للتأجير بعد التحقق واستيفاء المتطلبات القانونية والتأمينية والفنية.",eco3_t:"المستأجر",eco3_b:"البحث والمقارنة والحجز والعقد والدفع مع حالة مرجعية أوضح للمركبة.",eco4_t:"شركات التأمين",eco4_b:"الوصول إلى أدلة الفحص وسجل الاستخدام والسياق اللازم لمراجعة المطالبات.",
+report_k:"التقرير النهائي",report_h:"كل الأدلة تنتهي في سجل حالة واضح وقابل للمراجعة.",report_p:"التقرير النهائي يجمع الفحص الخارجي، الحالة الداخلية المدعومة، أحداث الاستخدام والتغيّرات المكتشفة دون تحويل الذكاء الاصطناعي وحده إلى حكم قانوني أو مالي.",
+score_note:"الدرجة مثال بصري للمفهوم وليست مقياسًا إنتاجيًا معتمدًا بعد.",review:"REVIEW REQUIRED",r1_k:"الفحص الخارجي",r1_v:"دليل ضرر جديد",r2_k:"الحالة الداخلية",r2_v:"حدث للمراجعة",r3_k:"أحداث الرحلة",r3_v:"أحداث مسجلة",r4_k:"قبل / بعد",r4_v:"المقارنة مكتملة",summary_k:"الملخص",summary_p:"ظهر دليل بصري جديد بعد الإرجاع وتم تسجيل حدث تشخيصي أثناء الاستخدام. القرار النهائي يبقى خاضعًا للمراجعة التشغيلية والبشرية.",
+now_k:"يعمل الآن",now_h:"النموذج العامل",now1:"الفحص الخارجي",now2:"كشف الأضرار الخارجية",now3:"المقارنة قبل / بعد",now4:"اكتشاف الضرر الجديد",future_k:"قيد التطوير / رؤية المنصة",future_h:"ذكاء المركبة المتصلة",future1:"تكامل OBD-II / CAN / GPS",future2:"تحليل AI للحالة الداخلية",future3:"المراقبة أثناء الاستخدام",future4:"Vehicle Condition Timeline الكامل",future5:"التأمين والمطالبات والتكامل التجاري",
+contact_h:"فحص خارجي. ذكاء داخلي. سياق زمني واحد.",contact_p:"الهدف هو بناء سجل موثق ومترابط لحالة المركبة عبر رحلة التأجير كاملة.",contact_btn:"تواصل معنا",phone:"الهاتف",email:"البريد الإلكتروني"
+},
+en:{
+nav_about:"About",nav_external:"External Inspection",nav_internal:"Internal Intelligence",nav_monitor:"Monitoring",nav_platform:"Platform",nav_contact:"Contact",
+status:"Working external prototype + connected platform vision in development",
+hero_title:'Vehicle intelligence for a <span class="accent">clearer, safer condition record.</span>',
+hero_lead:"VIS connects external inspection, supported internal vehicle data, and during-use monitoring into one condition record that explains the vehicle before rental, during use, and after return.",
+explore:"Explore the Platform",watch:"Watch Working Demo",
+safe_title:"Clearer disputes",safe_body:"Before/after condition evidence",decision_title:"Better decisions",decision_body:"Images + data + time context",time_title:"One record",time_body:"From handover to return",
+journey_title:"A complete condition journey",journey_sub:"VIS treats inspection as a time-linked vehicle condition story, not an isolated snapshot.",
+before:"Before Rental",before_s:"Establish baseline condition",during:"During Usage",during_s:"Supported events and monitoring",after:"After Return",after_s:"Re-inspect and compare",
+cap1_t:"External Inspection",cap1_b:"Detect and compare exterior damage using computer vision.",cap2_t:"Internal Intelligence",cap2_b:"Read supported diagnostic and operational data through OBD-II / CAN.",cap3_t:"During-Rental Monitoring",cap3_b:"GPS, trip events, driver indicators, and available technical signals.",cap4_t:"Final Report",cap4_b:"Combine evidence and detected changes in one reviewable record.",cap5_t:"Trust & Protection",cap5_b:"Clearer support for rentals, disputes, and insurance claims.",
+problem_k:"THE PROBLEM VIS SOLVES",problem_h:"Vehicle condition should not become clear only after return.",problem_p:"In traditional rental workflows, truth can be fragmented across photos, faults with unclear timing, and usage events that never reach the final report. VIS brings those signals into one context.",
+pr1_t:"Unrecorded prior damage",pr1_b:"Small dents or scratches can pass without consistent documentation before handover.",pr2_t:"Post-return disputes",pr2_b:"Without a strong baseline, proving whether damage is new or pre-existing becomes harder.",pr3_t:"Blind period during use",pr3_b:"Images alone cannot explain diagnostic or operational events that appear during rental.",pr4_t:"Fragmented evidence",pr4_b:"Inspection, GPS, contracts, and claims often remain in separate systems instead of one record.",
+story_h:"VIS builds a condition record, not just an inspection result.",story_p:"Each stage adds a layer of evidence that becomes part of one Vehicle Condition Timeline.",
+story1_b:"Capture the vehicle from eight defined views, identify the vehicle and plate, localize parts and existing damage, and collect a supported internal snapshot.",story2_b:"Record location, trip events, driver indicators, and available diagnostic signals with rental time context.",story3_b:"Re-inspect externally and internally, then compare against the baseline to identify what changed and the period in which it appeared.",
+external_k:"WORKING NOW · EXTERNAL INSPECTION",external_h:"This is where the concept becomes real evidence.",external_p:"The current prototype analyzes exterior vehicle images, detects damage, and compares the vehicle before rental and after return to surface evidence of newly appeared damage.",
+ef1:"8 Defined Views",ef2:"AI Damage Detection",ef3:"Damage-to-Part Association",ef4:"Before / After Comparison",ef5:"New Damage Evidence",
+internal_k:"INTERNAL VEHICLE INTELLIGENCE · PLATFORM VISION",internal_h:"What the camera cannot see can be clarified by supported vehicle data.",internal_p:"VIS is designed to collect supported OBD-II / CAN and GPS data, organize it in time, and use it to build deeper insight into internal condition, faults, and operational patterns.",
+in1_k:"WHAT THE DRIVER SEES",in1_t:"A general warning or visible symptom.",in1_b:"A driver may see Check Engine, temperature, battery, or a general dashboard message without the detailed diagnostic context or its history.",
+in2_k:"WHAT VIS ADDS",in2_t:"The context behind the warning.",in2_b:"DTC codes, supported live parameters, temporal trends, trip/location context, and the rental period in which an event appeared.",
+in3_k:"SAFETY PRINCIPLE",in3_t:"Read first. Do not control the vehicle.",in3_b:"The initial device concept is read-only: it collects supported signals without issuing control commands to critical vehicle systems.",
+monitor_k:"DURING USAGE",monitor_h:"The rental period becomes an understandable event trail, not a blind gap.",monitor_p:"Every supported operational or diagnostic event is recorded with time and context so it can be reviewed when comparing the vehicle before rental and after return.",
+live_t:"Vehicle context during rental",m1:"speed km/h",m2:"battery",m3:"coolant temperature",ev1_t:"11:46 · Driving event",ev1_b:"Hard braking was recorded with trip time and location context.",ev2_t:"13:20 · Diagnostic event",ev2_b:"An abnormal pattern appeared during use and was added for review.",
+timeline_h:"The value is not one alert — it is the history around it.",timeline_p:"VIS links inspections and relevant events in chronological order to show what existed before, what appeared during use, and what changed after return.",
+tl1_k:"BEFORE RENTAL",tl1_t:"Baseline recorded",tl1_b:"External inspection and supported internal snapshot.",tl2_k:"HANDOVER",tl2_t:"Rental starts",tl2_b:"The baseline becomes the reference state for this trip.",tl3_k:"DURING USAGE",tl3_t:"Trip events",tl3_b:"Supported events are recorded with time and context.",tl4_k:"RETURN",tl4_t:"Re-inspect and compare",tl4_b:"Condition-change evidence is linked to the period in which it appeared.",
+platform_k:"BEYOND INSPECTION",platform_h:"VIS manages the rental journey and vehicle condition — not just damage detection.",platform_p:"The same intelligence core supports rental companies, private owners, renters, and insurers while keeping each workflow distinct.",
+eco1_t:"Rental Companies",eco1_b:"Manage vehicles, bookings, inspections, contracts, and claims.",eco2_t:"Private Car Owners",eco2_b:"List vehicles after identity, ownership, legal, insurance, and technical requirements are satisfied.",eco3_t:"Renters",eco3_b:"Search, compare, book, contract, and pay with a clearer vehicle-condition baseline.",eco4_t:"Insurance Companies",eco4_b:"Access inspection evidence, usage history, and contextual information for claim review.",
+report_k:"FINAL REPORT",report_h:"All evidence ends in one clear, reviewable condition record.",report_p:"The final report combines external evidence, supported internal status, usage events, and detected changes without turning AI alone into a legal or financial decision.",
+score_note:"This score is a visual concept, not yet a validated production metric.",review:"REVIEW REQUIRED",r1_k:"External inspection",r1_v:"New-damage evidence",r2_k:"Internal status",r2_v:"Review event",r3_k:"Trip events",r3_v:"Recorded events",r4_k:"Before / after",r4_v:"Comparison complete",summary_k:"SUMMARY",summary_p:"New visual evidence appears after return and a diagnostic event was recorded during use. Final responsibility remains subject to operational and human review.",
+now_k:"WORKING NOW",now_h:"Working Prototype",now1:"External inspection",now2:"External damage detection",now3:"Before / after comparison",now4:"New-damage detection",future_k:"IN DEVELOPMENT / PLATFORM VISION",future_h:"Connected Vehicle Intelligence",future1:"OBD-II / CAN / GPS integration",future2:"AI analysis for internal condition",future3:"During-use monitoring",future4:"Complete Vehicle Condition Timeline",future5:"Insurance, claims, and commercial integration",
+contact_h:"External inspection. Internal intelligence. One time-linked context.",contact_p:"The goal is one documented, connected vehicle condition record across the full rental journey.",contact_btn:"Contact VIS",phone:"PHONE",email:"EMAIL"
+}
+};
+
+const langBtn=document.getElementById("langBtn");let lang=localStorage.getItem("visLang")||"ar";
+function applyLang(){const d=T[lang];document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";document.querySelectorAll("[data-t]").forEach(el=>{const k=el.dataset.t;if(d[k])el.textContent=d[k]});document.querySelectorAll("[data-t-html]").forEach(el=>{const k=el.dataset.tHtml;if(d[k])el.innerHTML=d[k]});langBtn.textContent=lang==="ar"?"EN":"AR";localStorage.setItem("visLang",lang)}
+langBtn.addEventListener("click",()=>{lang=lang==="ar"?"en":"ar";applyLang()});applyLang();
+
+addEventListener("load",()=>setTimeout(()=>document.getElementById("loader").classList.add("hide"),1250));
+
+const mobile=document.getElementById("mobileMenu"),menuBtn=document.getElementById("menuBtn");
+mobile.innerHTML=document.querySelector(".navlinks").innerHTML;
+menuBtn.addEventListener("click",()=>{const open=mobile.style.display==="grid";mobile.style.display=open?"none":"grid";if(!open)Object.assign(mobile.style,{position:"fixed",zIndex:"125",top:"84px",left:"12px",right:"12px",padding:"12px",borderRadius:"16px",background:"rgba(2,9,18,.98)",border:"1px solid rgba(255,255,255,.08)",backdropFilter:"blur(18px)",gap:"4px"});mobile.querySelectorAll("a").forEach(a=>Object.assign(a.style,{padding:"12px",textDecoration:"none",borderRadius:"10px",color:"#d9e8f2"}))});
+mobile.addEventListener("click",()=>mobile.style.display="none");
+
+const revealObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("show");revealObserver.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
+
+addEventListener("scroll",()=>{const h=document.documentElement.scrollHeight-innerHeight;document.getElementById("progress").style.width=(h>0?scrollY/h*100:0)+"%"},{passive:true});
+
+const stage=document.getElementById("techStage"),car=document.getElementById("heroCar");
+if(stage&&car&&matchMedia("(pointer:fine)").matches){stage.addEventListener("pointermove",e=>{const r=stage.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;car.style.transform=`translate3d(${x*13}px,${y*8}px,45px) rotateY(${x*4}deg) rotateX(${-y*3}deg)`});stage.addEventListener("pointerleave",()=>car.style.transform="translate3d(0,0,45px)")}
+
+const timelineObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle("active",e.isIntersecting)),{rootMargin:"-43% 0px -43% 0px",threshold:0});
+document.querySelectorAll(".timeline article").forEach(el=>timelineObserver.observe(el));
+
+const score=document.getElementById("score"),scoreNum=document.getElementById("scoreNum");
+if(score){const so=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;score.style.setProperty("--score","82%");const start=performance.now(),dur=1100,target=82;function tick(t){const p=Math.min(1,(t-start)/dur),v=Math.round(target*(1-Math.pow(1-p,3)));scoreNum.textContent=v;if(p<1)requestAnimationFrame(tick)}requestAnimationFrame(tick);so.unobserve(score)}),{threshold:.5});so.observe(score)}
+
+const lb=document.getElementById("lightbox"),lbImg=document.getElementById("lightboxImg");
+document.getElementById("internalImage").addEventListener("click",()=>{lbImg.src="assets/images/internal-inspection.png";lb.classList.add("open")});
+document.getElementById("lightboxClose").addEventListener("click",()=>{lb.classList.remove("open");lbImg.src=""});
+lb.addEventListener("click",e=>{if(e.target===lb){lb.classList.remove("open");lbImg.src=""}});
+addEventListener("keydown",e=>{if(e.key==="Escape"){lb.classList.remove("open");lbImg.src=""}});
+
+const video=document.querySelector("video");if(video){const vo=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting&&!video.paused)video.pause()}),{threshold:.12});vo.observe(video)}
+
+const dot=document.getElementById("cursorDot"),ring=document.getElementById("cursorRing");let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+"px";dot.style.top=my+"px"});(function cursorLoop(){rx+=(mx-rx)*.17;ry+=(my-ry)*.17;ring.style.left=rx+"px";ring.style.top=ry+"px";requestAnimationFrame(cursorLoop)})();
+document.querySelectorAll("a,button,.card,.story-card,.metric").forEach(el=>{el.addEventListener("mouseenter",()=>{ring.style.width="48px";ring.style.height="48px";ring.style.borderColor="rgba(80,231,255,.75)"});el.addEventListener("mouseleave",()=>{ring.style.width="31px";ring.style.height="31px";ring.style.borderColor="rgba(80,231,255,.46)"})});
+
+const canvas=document.getElementById("network"),ctx=canvas.getContext("2d");let W,H,dpr,pts=[];
+function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+"px";canvas.style.height=H+"px";ctx.setTransform(dpr,0,0,dpr,0,0);const n=Math.min(65,Math.max(28,Math.floor(W/25)));pts=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.11,vy:(Math.random()-.5)*.11,r:Math.random()*1+.35}))}
+addEventListener("resize",resize);resize();(function draw(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle="rgba(128,224,255,.28)";ctx.fill()});for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<115){ctx.strokeStyle=`rgba(47,124,255,${(1-d/115)*.05})`;ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}}requestAnimationFrame(draw)})();
+</script>
+</body>
+</html>

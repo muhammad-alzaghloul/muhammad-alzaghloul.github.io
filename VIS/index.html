@@ -147,7 +147,7 @@ html[dir="ltr"] .hero-content{direction:ltr;text-align:left}
 .hero-aura{position:absolute;width:78%;height:24%;bottom:13%;border-radius:50%;background:radial-gradient(ellipse,rgba(80,231,255,.28),rgba(47,124,255,.08) 48%,transparent 72%);filter:blur(26px)}
 .orbit{position:absolute;border-radius:50%;pointer-events:none}.orbit.a{width:84%;height:84%;border:1px solid rgba(80,231,255,.23);animation:spin 18s linear infinite}.orbit.b{width:68%;height:68%;border:1px dashed rgba(119,104,255,.34);animation:spin 13s linear infinite reverse}.orbit.c{width:52%;height:52%;border:1px solid rgba(80,231,255,.13)}
 .scan-sector{position:absolute;width:80%;height:80%;border-radius:50%;background:conic-gradient(from 200deg,transparent 0 16%,rgba(80,231,255,.13) 23%,rgba(80,231,255,.02) 34%,transparent 43%);animation:spin 8s linear infinite}
-.car-img{position:relative;z-index:5;width:96%;height:auto;object-fit:contain;filter:drop-shadow(0 34px 42px rgba(0,0,0,.58)) drop-shadow(0 0 24px rgba(37,149,255,.13));transform:translate3d(0,0,45px);will-change:transform;transition:transform .16s ease-out}
+.car-img{position:relative;z-index:5;width:78%;max-width:540px;height:auto;object-fit:contain;filter:drop-shadow(0 34px 42px rgba(0,0,0,.58)) drop-shadow(0 0 24px rgba(37,149,255,.13));transform:translate3d(0,0,45px);will-change:transform;transition:transform .16s ease-out}
 .tech-label{position:absolute;z-index:7;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:rgba(3,15,27,.72);border:1px solid rgba(80,231,255,.15);backdrop-filter:blur(10px);color:#e4faff;font-size:9px;font-weight:900;letter-spacing:.08em}
 .tech-label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan)}
 .tech-label.cam{left:1%;top:25%}.tech-label.obd{right:0;top:31%}.tech-label.gps{left:7%;bottom:20%}.tech-label.ai{right:7%;bottom:18%}
@@ -273,7 +273,7 @@ footer{padding:24px 0 34px;color:#5f788e;font-size:9px}footer .max{display:flex;
       <div class="hero-visual reveal">
         <div class="tech-stage" id="techStage">
           <div class="hero-aura"></div><div class="orbit a"></div><div class="orbit b"></div><div class="orbit c"></div><div class="scan-sector"></div>
-          <img class="car-img" id="heroCar" loading="eager" width="1536" height="1024" src="assets/images/hero-car.png" alt="VIS vehicle">
+          <img class="car-img" id="heroCar" loading="eager" width="1536" height="1024" src="./assets/images/hero-car.png" alt="VIS vehicle">
           <div class="tech-label cam">VISUAL</div><div class="tech-label obd">OBD / CAN</div><div class="tech-label gps">GPS</div><div class="tech-label ai">AI</div>
           <div class="left-rail"><span><i>◉</i>CAMERAS</span><span><i>⌁</i>SENSORS</span><span><i>AI</i>AI ANALYSIS</span></div>
         </div>
@@ -327,7 +327,7 @@ footer{padding:24px 0 34px;color:#5f788e;font-size:9px}footer .max{display:flex;
 <section class="section" id="external">
   <div class="max">
     <div class="section-head reveal"><p class="eyebrow" data-t="external_k">النموذج العامل الآن · الفحص الخارجي</p><h2 data-t="external_h">هنا تتحول الفكرة إلى دليل يعمل فعليًا.</h2><p class="section-lead" data-t="external_p">النموذج الحالي يفحص صور المركبة الخارجية، يكشف الأضرار، ويقارن حالة المركبة قبل التأجير وبعد الإرجاع لاستخراج دليل الضرر الجديد.</p></div>
-    <div class="glass video-card reveal"><div class="video-shell"><div class="video-badge">WORKING PROTOTYPE</div><video controls playsinline preload="metadata" poster="assets/images/external-demo-poster.jpg"><source src="assets/videos/vis-external-demo.mp4" type="video/mp4"></video></div><div class="feature-row"><div data-t="ef1">ثماني زوايا محددة</div><div data-t="ef2">كشف الضرر بالذكاء الاصطناعي</div><div data-t="ef3">ربط الضرر بالجزء</div><div data-t="ef4">مقارنة قبل / بعد</div><div data-t="ef5">اكتشاف الضرر الجديد</div></div></div>
+    <div class="glass video-card reveal"><div class="video-shell"><div class="video-badge">WORKING PROTOTYPE</div><video controls playsinline preload="metadata" poster="./assets/images/external-demo-poster.jpg"><source src="./assets/videos/vis-external-demo.mp4" type="video/mp4"></video></div><div class="feature-row"><div data-t="ef1">ثماني زوايا محددة</div><div data-t="ef2">كشف الضرر بالذكاء الاصطناعي</div><div data-t="ef3">ربط الضرر بالجزء</div><div data-t="ef4">مقارنة قبل / بعد</div><div data-t="ef5">اكتشاف الضرر الجديد</div></div></div>
   </div>
 </section>
 
@@ -335,7 +335,7 @@ footer{padding:24px 0 34px;color:#5f788e;font-size:9px}footer .max{display:flex;
   <div class="max">
     <div class="section-head reveal"><p class="eyebrow" data-t="internal_k">الفحص الداخلي الإلكتروني · رؤية المنصة</p><h2 data-t="internal_h">ما لا تراه الكاميرا، يمكن أن توضحه بيانات المركبة المدعومة.</h2><p class="section-lead" data-t="internal_p">تجمع VIS البيانات التي تتيحها المركبة عبر OBD-II / CAN وGPS، ثم تنظّمها زمنيًا وتستخدمها لبناء فهم أعمق للحالة الداخلية، الأعطال، والأنماط التشغيلية.</p></div>
     <div class="internal-layout">
-      <div class="glass infographic-frame reveal"><img id="internalImage" loading="lazy" width="1672" height="941" src="assets/images/internal-inspection.png" alt="VIS internal vehicle inspection workflow"></div>
+      <div class="glass infographic-frame reveal"><img id="internalImage" loading="lazy" width="1672" height="941" src="./assets/images/internal-inspection.png" alt="VIS internal vehicle inspection workflow"></div>
       <div class="internal-side stagger">
         <article class="glass insight reveal"><small data-t="in1_k">ما يراه السائق</small><h3 data-t="in1_t">تحذير عام أو عرض ظاهر.</h3><p data-t="in1_b">قد يرى السائق Check Engine أو حرارة أو بطارية أو رسالة عامة، لكنه لا يرى دائمًا التفاصيل التشخيصية أو تاريخ ظهورها.</p></article>
         <article class="glass insight reveal"><small data-t="in2_k">ما تضيفه VIS</small><h3 data-t="in2_t">السياق خلف التحذير.</h3><p data-t="in2_b">أكواد DTC، قراءات مدعومة، اتجاهات زمنية، سياق الرحلة والموقع، وربط الحدث بفترة التأجير.</p><div class="vis-sees"><div>DTC / Pending Faults</div><div>Battery / Temperature</div><div>GPS / Trip Events</div><div>Time-linked History</div></div></article>
@@ -477,7 +477,7 @@ const score=document.getElementById("score"),scoreNum=document.getElementById("s
 if(score){const so=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;score.style.setProperty("--score","82%");const start=performance.now(),dur=1100,target=82;function tick(t){const p=Math.min(1,(t-start)/dur),v=Math.round(target*(1-Math.pow(1-p,3)));scoreNum.textContent=v;if(p<1)requestAnimationFrame(tick)}requestAnimationFrame(tick);so.unobserve(score)}),{threshold:.5});so.observe(score)}
 
 const lb=document.getElementById("lightbox"),lbImg=document.getElementById("lightboxImg");
-document.getElementById("internalImage").addEventListener("click",()=>{lbImg.src="assets/images/internal-inspection.png";lb.classList.add("open")});
+document.getElementById("internalImage").addEventListener("click",()=>{lbImg.src="./assets/images/internal-inspection.png";lb.classList.add("open")});
 document.getElementById("lightboxClose").addEventListener("click",()=>{lb.classList.remove("open");lbImg.src=""});
 lb.addEventListener("click",e=>{if(e.target===lb){lb.classList.remove("open");lbImg.src=""}});
 addEventListener("keydown",e=>{if(e.key==="Escape"){lb.classList.remove("open");lbImg.src=""}});
